@@ -1,0 +1,20 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://actors/GridActor.gd" id="1"]
+[ext_resource type="Texture2D" path="res://icon.svg" id="2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(22, 22)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1")
+controllable = true
+position = Vector2(48, 48)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2")
+scale = Vector2(0.35, 0.35)
+modulate = Color(0.24, 0.46, 0.92, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_1")
