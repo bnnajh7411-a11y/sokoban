@@ -1,8 +1,21 @@
 [gd_scene format=3 uid="uid://tkhg0d36if2o"]
 
+[ext_resource type="Texture2D" uid="uid://csi3h0hxlslub" path="res://icon.svg" id="1_glv2v"]
+
 [sub_resource type="TileSet" id="TileSet_rxg2q"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uu6xs"]
+size = Vector2(126, 130)
 
 [node name="Node2D" type="Node2D" unique_id=888069052]
 
-[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=925976283]
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1818392873]
+
+[node name="TileMapLayer" type="TileMapLayer" parent="StaticBody2D" unique_id=925976283]
 tile_set = SubResource("TileSet_rxg2q")
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D" unique_id=125063270]
+texture = ExtResource("1_glv2v")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=219503291]
+shape = SubResource("RectangleShape2D_uu6xs")
