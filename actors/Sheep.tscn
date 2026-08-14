@@ -1,19 +1,20 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://damggt3ffynxf"]
 
-[ext_resource type="Script" path="res://actors/Sheep.gd" id="1"]
-[ext_resource type="Texture2D" path="res://icon.svg" id="2"]
+[ext_resource type="Script" uid="uid://e5hcnyjehoyu" path="res://actors/Sheep.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://pqt0vephf4vk" path="res://image/Sheep.png" id="2_nsh4p"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(22, 22)
 
-[node name="Sheep" type="CharacterBody2D"]
-script = ExtResource("1")
+[node name="Sheep" type="CharacterBody2D" unique_id=1311717518]
 position = Vector2(208, 176)
+script = ExtResource("1")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2")
-scale = Vector2(0.35, 0.35)
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1472847356]
 modulate = Color(0.96, 0.94, 0.82, 1)
+scale = Vector2(0.8750001, 0.8750001)
+texture = ExtResource("2_nsh4p")
+flip_h = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=344988410]
 shape = SubResource("RectangleShape2D_1")

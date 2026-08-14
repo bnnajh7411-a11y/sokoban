@@ -1,17 +1,17 @@
 [gd_resource type="TileSet" format=3 uid="uid://vpv4llnwj4qi"]
 
-[ext_resource type="Texture2D" uid="uid://c7sqh3t1050y8" path="res://generated/Sprite-0001.png" id="1_jy0dg"]
+[ext_resource type="Texture2D" uid="uid://c7sqh3t1050y8" path="res://image/TileSet.png" id="1_jy0dg"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_y0ohr"]
 texture = ExtResource("1_jy0dg")
-texture_region_size = Vector2i(32, 32)
+texture_region_size = Vector2i(48, 48)
 0:0/0 = 0
 1:0/0 = 0
 1:0/0/custom_data_0 = true
 2:0/0 = 0
 
 [resource]
-tile_size = Vector2i(32, 32)
+tile_size = Vector2i(48, 48)
 custom_data_layer_0/name = "solid"
 custom_data_layer_0/type = 1
 sources/0 = SubResource("TileSetAtlasSource_y0ohr")

@@ -4,7 +4,7 @@ extends CharacterBody2D
 signal move_finished(actor, from_cell, to_cell, direction)
 
 @export var tile_map_path: NodePath = NodePath("../TileMapLayer")
-@export var cell_size: int = 32
+@export var cell_size: int = 48
 @export var move_duration: float = 0.12
 @export var jump_height: float = 6.0
 @export var block_bump_distance: float = 3.0
@@ -192,9 +192,9 @@ func _update_facing(direction: Vector2i) -> void:
 		return
 
 	if direction.x > 0:
-		sprite.flip_h = false
-	elif direction.x < 0:
 		sprite.flip_h = true
+	elif direction.x < 0:
+		sprite.flip_h = false
 
 
 func react_to_wolf_move(wolf_from: Vector2i, wolf_to: Vector2i) -> bool:
