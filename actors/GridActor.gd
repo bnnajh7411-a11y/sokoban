@@ -1,6 +1,8 @@
 class_name GridActor
 extends CharacterBody2D
 
+signal move_finished(actor, from_cell, to_cell, direction)
+
 @export var tile_map_path: NodePath = NodePath("../TileMapLayer")
 @export var cell_size: int = 32
 @export var move_duration: float = 0.12
@@ -19,8 +21,9 @@ var tile_map_layer: TileMapLayer
 var grid_cell: Vector2i
 var _is_moving: bool = false
 var _move_tween: Tween
-var _jump_tween: Tween
 var _feedback_tween: Tween
+var _move_start_cell: Vector2i = Vector2i.ZERO
+var _move_direction: Vector2i = Vector2i.ZERO
 var _jump_offset: Vector2 = Vector2.ZERO
 var _block_offset: Vector2 = Vector2.ZERO
 var _queued_direction: Vector2i = Vector2i.ZERO
@@ -65,6 +68,8 @@ func move_on_grid(direction: Vector2i) -> bool:
 
 	_queued_direction = Vector2i.ZERO
 	_update_facing(direction)
+	_move_start_cell = grid_cell
+	_move_direction = direction
 	grid_cell = next_cell
 	_move_to_cell(grid_cell)
 	return true
@@ -101,8 +106,6 @@ func _move_to_cell(cell: Vector2i) -> void:
 
 	if _move_tween != null:
 		_move_tween.kill()
-	if _jump_tween != null:
-		_jump_tween.kill()
 	if _feedback_tween != null:
 		_feedback_tween.kill()
 		_block_offset = Vector2.ZERO
@@ -112,11 +115,8 @@ func _move_to_cell(cell: Vector2i) -> void:
 	_move_tween.set_trans(Tween.TRANS_SINE)
 	_move_tween.set_ease(Tween.EASE_OUT)
 	_move_tween.tween_property(self, "global_position", target_position, move_duration)
+	_move_tween.parallel().tween_method(_set_jump_progress, 0.0, 1.0, move_duration)
 	_move_tween.finished.connect(_on_move_tween_finished)
-
-	_jump_tween = create_tween()
-	_jump_tween.tween_method(_set_jump_progress, 0.0, 1.0, move_duration)
-	_jump_tween.finished.connect(_on_jump_tween_finished)
 
 
 func _snap_to_cell(cell: Vector2i) -> void:
@@ -152,7 +152,15 @@ func _on_move_tween_finished() -> void:
 	_is_moving = false
 	_move_tween = null
 	_jump_offset = Vector2.ZERO
+	_block_offset = Vector2.ZERO
+	sprite.scale = sprite_base_scale
 	_refresh_sprite_visuals()
+	move_finished.emit(self, _move_start_cell, grid_cell, _move_direction)
+	_move_start_cell = grid_cell
+	_move_direction = Vector2i.ZERO
+
+
+func consume_queued_direction() -> void:
 	_consume_queued_direction()
 
 
@@ -162,12 +170,6 @@ func _set_jump_progress(progress: float) -> void:
 
 	var pulse: float = sin(progress * PI)
 	sprite.scale = sprite_base_scale * Vector2(1.0 + 0.10 * pulse, 1.0 - 0.08 * pulse)
-	_refresh_sprite_visuals()
-
-
-func _on_jump_tween_finished() -> void:
-	_jump_tween = null
-	sprite.scale = sprite_base_scale
 	_refresh_sprite_visuals()
 
 
@@ -192,6 +194,11 @@ func _update_facing(direction: Vector2i) -> void:
 		sprite.flip_h = false
 	elif direction.x < 0:
 		sprite.flip_h = true
+
+
+func react_to_wolf_move(wolf_from: Vector2i, wolf_to: Vector2i) -> bool:
+	# Sheep overrides this.
+	return false
 
 
 func _refresh_sprite_visuals() -> void:
