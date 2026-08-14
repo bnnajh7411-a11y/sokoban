@@ -6,9 +6,11 @@ const CLEAR_MESSAGE_TEXT: String = "양이 목표 타일에 도착했습니다."
 const GAME_OVER_TITLE_TEXT: String = "게임 오버"
 const GAME_OVER_MESSAGE_TEXT: String = "플레이어와 양이 겹쳤습니다."
 const SHEEP_GROUP_NAME: StringName = &"sheep"
+const MOVE_COUNT_TEXT: String = "이동 횟수: %d"
 
 @onready var tile_map_layer: TileMapLayer = $TileMapLayer
 @onready var player: GridActor = $Player
+@onready var move_count_label: Label = $CanvasLayer/Hud/MoveCountLabel
 @onready var result_overlay: Control = $CanvasLayer/ClearOverlay
 @onready var result_title_label: Label = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/TitleLabel
 @onready var result_message_label: Label = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/MessageLabel
@@ -17,6 +19,7 @@ const SHEEP_GROUP_NAME: StringName = &"sheep"
 var _goal_cells: Dictionary = {}
 var _pending_sheep_moves: int = 0
 var _waiting_for_sheep: bool = false
+var _player_move_count: int = 0
 var _is_cleared: bool = false
 var _is_game_over: bool = false
 
@@ -24,7 +27,9 @@ var _is_game_over: bool = false
 func _ready() -> void:
 	_collect_goal_cells()
 	_setup_clear_ui()
+	_update_move_count_ui()
 	call_deferred("_bind_turn_flow")
+	_update_sheep_alert_states()
 	_check_for_game_over()
 	_check_for_clear()
 
@@ -34,6 +39,8 @@ func _bind_turn_flow() -> void:
 
 	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
 		_connect_actor(node as GridActor)
+
+	_update_sheep_alert_states()
 
 
 func _connect_actor(actor: GridActor) -> void:
@@ -48,6 +55,10 @@ func _setup_clear_ui() -> void:
 	result_overlay.visible = false
 	if not restart_button.pressed.is_connected(_on_restart_button_pressed):
 		restart_button.pressed.connect(_on_restart_button_pressed)
+
+
+func _update_move_count_ui() -> void:
+	move_count_label.text = MOVE_COUNT_TEXT % _player_move_count
 
 
 func _collect_goal_cells() -> void:
@@ -109,6 +120,7 @@ func _show_clear_ui() -> void:
 	_is_cleared = true
 	_is_game_over = false
 	player.controllable = false
+	_stop_sheep_alert_states()
 	result_title_label.text = CLEAR_TITLE_TEXT
 	result_message_label.text = CLEAR_MESSAGE_TEXT
 	result_overlay.visible = true
@@ -122,6 +134,7 @@ func _show_game_over_ui() -> void:
 	_is_cleared = false
 	_is_game_over = true
 	player.controllable = false
+	_stop_sheep_alert_states()
 	result_title_label.text = GAME_OVER_TITLE_TEXT
 	result_message_label.text = GAME_OVER_MESSAGE_TEXT
 	result_overlay.visible = true
@@ -137,7 +150,10 @@ func _on_actor_move_finished(actor: Node, from_cell: Vector2i, to_cell: Vector2i
 		return
 
 	if actor == player:
+		_player_move_count += 1
+		_update_move_count_ui()
 		_resolve_sheep_turn(from_cell, to_cell)
+		_update_sheep_alert_states()
 		return
 
 	if not _is_sheep_actor(actor):
@@ -155,6 +171,8 @@ func _on_actor_move_finished(actor: Node, from_cell: Vector2i, to_cell: Vector2i
 	if _pending_sheep_moves == 0 and _waiting_for_sheep:
 		_waiting_for_sheep = false
 		player.consume_queued_direction()
+
+	_update_sheep_alert_states()
 
 
 func _resolve_sheep_turn(wolf_from: Vector2i, wolf_to: Vector2i) -> void:
@@ -177,6 +195,23 @@ func _resolve_sheep_turn(wolf_from: Vector2i, wolf_to: Vector2i) -> void:
 
 func _on_restart_button_pressed() -> void:
 	get_tree().reload_current_scene()
+
+
+func _update_sheep_alert_states() -> void:
+	if _is_finished():
+		return
+
+	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
+		var sheep: SheepActor = node as SheepActor
+		if sheep != null:
+			sheep.update_player_proximity(player.grid_cell)
+
+
+func _stop_sheep_alert_states() -> void:
+	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
+		var sheep: SheepActor = node as SheepActor
+		if sheep != null:
+			sheep.stop_alert_shake()
 
 
 func _is_sheep_actor(actor: Node) -> bool:

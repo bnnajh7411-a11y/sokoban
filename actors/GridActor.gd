@@ -100,6 +100,7 @@ func _is_legacy_walkable(cell: Vector2i) -> bool:
 
 
 func _move_to_cell(cell: Vector2i) -> void:
+	_on_move_started()
 	_is_moving = true
 
 	var target_position: Vector2 = _cell_to_world(cell)
@@ -239,3 +240,7 @@ func _consume_queued_direction() -> void:
 func _on_feedback_tween_finished() -> void:
 	_feedback_tween = null
 	_refresh_sprite_visuals()
+
+
+func _on_move_started() -> void:
+	pass
