@@ -61,6 +61,14 @@ func stop_alert_shake() -> void:
 	_stop_alert_shake()
 
 
+func restore_grid_state(state: Dictionary) -> void:
+	super.restore_grid_state(state)
+	_alert_active = false
+	_alert_time = 0.0
+	_alert_offset = Vector2.ZERO
+	_refresh_sprite_visuals()
+
+
 func _is_wolf_in_range(wolf_cell: Vector2i) -> bool:
 	var delta: Vector2i = wolf_cell - grid_cell
 	return max(abs(delta.x), abs(delta.y)) <= 1

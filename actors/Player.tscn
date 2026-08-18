@@ -1,20 +1,20 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://boiwx3wbv6oq8"]
 
-[ext_resource type="Script" path="res://actors/GridActor.gd" id="1"]
-[ext_resource type="Texture2D" path="res://icon.svg" id="2"]
+[ext_resource type="Script" uid="uid://c5oy6eo0uukct" path="res://actors/GridActor.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://cy5t2lop1oddt" path="res://image/Wolf.png" id="2_kerl5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(22, 22)
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" unique_id=1151694510]
+position = Vector2(48, 48)
 script = ExtResource("1")
 controllable = true
-position = Vector2(48, 48)
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2")
-scale = Vector2(0.35, 0.35)
-modulate = Color(0.24, 0.46, 0.92, 1)
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1231134172]
+modulate = Color(1, 0.99770314, 0.9274734, 1)
+scale = Vector2(0.9374999, 0.9374998)
+texture = ExtResource("2_kerl5")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=570684757]
 shape = SubResource("RectangleShape2D_1")

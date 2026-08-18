@@ -1,6 +1,7 @@
 class_name GridActor
 extends CharacterBody2D
 
+signal move_started(actor, from_cell, to_cell, direction)
 signal move_finished(actor, from_cell, to_cell, direction)
 
 @export var tile_map_path: NodePath = NodePath("../TileMapLayer")
@@ -70,9 +71,43 @@ func move_on_grid(direction: Vector2i) -> bool:
 	_update_facing(direction)
 	_move_start_cell = grid_cell
 	_move_direction = direction
+	move_started.emit(self, grid_cell, next_cell, direction)
 	grid_cell = next_cell
 	_move_to_cell(grid_cell)
 	return true
+
+
+func is_moving() -> bool:
+	return _is_moving
+
+
+func get_grid_state() -> Dictionary:
+	return {
+		"grid_cell": grid_cell,
+		"flip_h": sprite.flip_h,
+	}
+
+
+func restore_grid_state(state: Dictionary) -> void:
+	if _move_tween != null:
+		_move_tween.kill()
+		_move_tween = null
+	if _feedback_tween != null:
+		_feedback_tween.kill()
+		_feedback_tween = null
+
+	_is_moving = false
+	_queued_direction = Vector2i.ZERO
+	_move_start_cell = grid_cell
+	_move_direction = Vector2i.ZERO
+
+	var restored_cell: Variant = state.get("grid_cell", grid_cell)
+	if restored_cell is Vector2i:
+		grid_cell = restored_cell
+
+	_snap_to_cell(grid_cell)
+	sprite.flip_h = bool(state.get("flip_h", sprite.flip_h))
+	_refresh_sprite_visuals()
 
 
 func _can_enter(cell: Vector2i) -> bool:

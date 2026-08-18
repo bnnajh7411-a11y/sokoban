@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="Sokoban"
-run/main_scene="res://Main.tscn"
+run/main_scene="res://scenes/Main.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
+
+[internationalization]
+
+locale/locale_filter_mode=0
 
 [physics]
 
