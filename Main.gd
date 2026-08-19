@@ -11,6 +11,7 @@ const MOVE_COUNT_TEXT: String = "이동 횟수: %d"
 @onready var tile_map_layer: TileMapLayer = $TileMapLayer
 @onready var player: GridActor = $Player
 @onready var undo_button: Button = get_node_or_null("CanvasLayer/Hud/UndoButton") as Button
+@onready var hud_restart_button: Button = get_node_or_null("CanvasLayer/Hud/RetryButton") as Button
 @onready var move_count_label: Label = $CanvasLayer/Hud/MoveCountLabel
 @onready var result_overlay: Control = $CanvasLayer/ClearOverlay
 @onready var result_title_label: Label = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/TitleLabel
@@ -60,6 +61,8 @@ func _connect_actor(actor: GridActor) -> void:
 func _setup_clear_ui() -> void:
 	result_overlay.visible = false
 	result_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if hud_restart_button != null and not hud_restart_button.pressed.is_connected(_on_restart_button_pressed):
+		hud_restart_button.pressed.connect(_on_restart_button_pressed)
 	if not restart_button.pressed.is_connected(_on_restart_button_pressed):
 		restart_button.pressed.connect(_on_restart_button_pressed)
 

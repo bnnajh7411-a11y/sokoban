@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://boiwx3wbv6oq8" path="res://actors/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://damggt3ffynxf" path="res://actors/Sheep.tscn" id="3_sheep"]
 [ext_resource type="Texture2D" uid="uid://dpujglgwqhbnh" path="res://image/Undo.png" id="5_vcsgt"]
+[ext_resource type="Texture2D" uid="uid://dqdopxl3axuhl" path="res://image/Retry.png" id="6_c01mt"]
 
 [node name="Main" type="Node2D" unique_id=598128310]
 script = ExtResource("1_main")
@@ -57,6 +58,18 @@ offset_bottom = 198.0
 scale = Vector2(0.5, 0.5)
 theme_override_icons/icon = ExtResource("5_vcsgt")
 icon = ExtResource("5_vcsgt")
+icon_alignment = 1
+
+[node name="RetryButton" type="Button" parent="CanvasLayer/Hud" unique_id=1186694230]
+custom_minimum_size = Vector2(120, 32)
+layout_mode = 0
+offset_left = 100.0
+offset_top = 90.0
+offset_right = 220.0
+offset_bottom = 198.0
+scale = Vector2(0.5, 0.5)
+theme_override_icons/icon = ExtResource("5_vcsgt")
+icon = ExtResource("6_c01mt")
 icon_alignment = 1
 
 [node name="ClearOverlay" type="Control" parent="CanvasLayer" unique_id=344761879]
