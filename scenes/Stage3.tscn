@@ -6,8 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://dpujglgwqhbnh" path="res://image/Undo.png" id="3_uu5ob"]
 [ext_resource type="Texture2D" uid="uid://dqdopxl3axuhl" path="res://image/Retry.png" id="4_asesr"]
 [ext_resource type="PackedScene" uid="uid://boiwx3wbv6oq8" path="res://actors/Player.tscn" id="4_tg7l7"]
+[ext_resource type="AudioStream" uid="uid://d38mchrsl3i5s" path="res://audios/L01183-002+B+KR_KSL2022_A0031+가축_양_인천 논현고잔동_늘솔길양떼목장에서 나는 아기 양 울음 소리_48khz320kbps_Mono.mp3" id="7_tg7l7"]
 
-[node name="Stage1" type="Node2D" unique_id=1683069215]
+[node name="Stage" type="Node2D" unique_id=1683069215]
 script = ExtResource("1_khgvh")
 
 [node name="Polygon2D" type="Polygon2D" parent="." unique_id=1008289836]
@@ -117,3 +118,6 @@ position = Vector2(345, 218)
 
 [node name="Player" parent="." unique_id=1763199205 instance=ExtResource("4_tg7l7")]
 position = Vector2(920, 366)
+
+[node name="SheepAlertSfx" type="AudioStreamPlayer" parent="." unique_id=1520221067]
+stream = ExtResource("7_tg7l7")

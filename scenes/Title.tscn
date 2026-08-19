@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://m32m7mc7nxp"]
 
 [ext_resource type="TileSet" uid="uid://vpv4llnwj4qi" path="res://generated/level_tileset.tres" id="2_mh4yb"]
+[ext_resource type="AudioStream" uid="uid://fd57hqj1i57p" path="res://audios/Foxpath Ledger.mp3" id="3_2sdm5"]
 [ext_resource type="PackedScene" uid="uid://boiwx3wbv6oq8" path="res://actors/Player.tscn" id="3_wq2ky"]
 
 [node name="Title" type="Node2D" unique_id=598128310]
@@ -57,3 +58,8 @@ text = "시작"
 [node name="ExitButton" type="Button" parent="CanvasLayer/ClearOverlay/CenterContainer/VBoxContainer" unique_id=79247946]
 layout_mode = 2
 text = "종료"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1591794442]
+stream = ExtResource("3_2sdm5")
+autoplay = true
+parameters/looping = true

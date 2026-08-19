@@ -46,6 +46,10 @@ func react_to_wolf_move(wolf_from: Vector2i, wolf_to: Vector2i) -> bool:
 	return move_on_grid(flee_direction)
 
 
+func did_wolf_enter_alert_range(wolf_from: Vector2i, wolf_to: Vector2i) -> bool:
+	return not _is_wolf_in_range(wolf_from) and _is_wolf_in_range(wolf_to)
+
+
 func update_player_proximity(player_cell: Vector2i) -> void:
 	if _is_moving:
 		_stop_alert_shake()

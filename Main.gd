@@ -13,6 +13,7 @@ const MOVE_COUNT_TEXT: String = "이동 횟수: %d"
 @onready var undo_button: Button = get_node_or_null("CanvasLayer/Hud/UndoButton") as Button
 @onready var hud_restart_button: Button = get_node_or_null("CanvasLayer/Hud/RetryButton") as Button
 @onready var move_count_label: Label = $CanvasLayer/Hud/MoveCountLabel
+@onready var sheep_alert_sfx: AudioStreamPlayer = $SheepAlertSfx
 @onready var result_overlay: Control = $CanvasLayer/ClearOverlay
 @onready var result_title_label: Label = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/TitleLabel
 @onready var result_message_label: Label = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/MessageLabel
@@ -283,11 +284,18 @@ func _resolve_sheep_turn(wolf_from: Vector2i, wolf_to: Vector2i) -> void:
 
 	_pending_sheep_moves = 0
 	_waiting_for_sheep = false
+	var should_play_alert_sound: bool = false
 
 	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
-		var sheep: GridActor = node as GridActor
-		if sheep != null and sheep.react_to_wolf_move(wolf_from, wolf_to):
-			_pending_sheep_moves += 1
+		var sheep: SheepActor = node as SheepActor
+		if sheep != null:
+			if sheep.did_wolf_enter_alert_range(wolf_from, wolf_to):
+				should_play_alert_sound = true
+			if sheep.react_to_wolf_move(wolf_from, wolf_to):
+				_pending_sheep_moves += 1
+
+	if should_play_alert_sound:
+		_play_sheep_alert_sound()
 
 	if _pending_sheep_moves == 0:
 		_is_turn_active = false
@@ -381,3 +389,11 @@ func _has_active_motion() -> bool:
 
 func _is_finished() -> bool:
 	return _is_cleared or _is_game_over
+
+
+func _play_sheep_alert_sound() -> void:
+	if sheep_alert_sfx == null:
+		return
+
+	sheep_alert_sfx.stop()
+	sheep_alert_sfx.play()
