@@ -17,6 +17,7 @@ const MOVE_COUNT_TEXT: String = "이동 횟수: %d"
 @onready var result_title_label: Label = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/TitleLabel
 @onready var result_message_label: Label = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/MessageLabel
 @onready var restart_button: Button = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/RetryButton
+@onready var tutorial_overlay: Node = get_node_or_null("CanvasLayer/TutorialOverlay")
 
 var _goal_cells: Dictionary = {}
 var _undo_history: Array = []
@@ -298,6 +299,9 @@ func _resolve_sheep_turn(wolf_from: Vector2i, wolf_to: Vector2i) -> void:
 
 
 func _on_restart_button_pressed() -> void:
+	if tutorial_overlay != null and tutorial_overlay.has_method("prepare_for_restart"):
+		tutorial_overlay.call("prepare_for_restart")
+
 	get_tree().reload_current_scene()
 
 
