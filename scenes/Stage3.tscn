@@ -52,6 +52,7 @@ offset_bottom = 198.0
 scale = Vector2(0.5, 0.5)
 theme_override_icons/icon = ExtResource("3_uu5ob")
 icon = ExtResource("3_uu5ob")
+flat = true
 icon_alignment = 1
 
 [node name="RetryButton" type="Button" parent="CanvasLayer/Hud" unique_id=1646702637]
@@ -64,6 +65,7 @@ offset_bottom = 198.0
 scale = Vector2(0.5, 0.5)
 theme_override_icons/icon = ExtResource("3_uu5ob")
 icon = ExtResource("4_asesr")
+flat = true
 icon_alignment = 1
 
 [node name="ClearOverlay" type="Control" parent="CanvasLayer" unique_id=1941664023]

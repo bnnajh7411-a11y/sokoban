@@ -88,7 +88,7 @@ func get_grid_state() -> Dictionary:
 	}
 
 
-func restore_grid_state(state: Dictionary) -> void:
+func restore_grid_state(state: Dictionary, animate: bool = false) -> float:
 	if _move_tween != null:
 		_move_tween.kill()
 		_move_tween = null
@@ -96,18 +96,29 @@ func restore_grid_state(state: Dictionary) -> void:
 		_feedback_tween.kill()
 		_feedback_tween = null
 
+	var restored_cell: Variant = state.get("grid_cell", grid_cell)
+	var restored_flip_h: bool = bool(state.get("flip_h", sprite.flip_h))
+
 	_is_moving = false
 	_queued_direction = Vector2i.ZERO
 	_move_start_cell = grid_cell
 	_move_direction = Vector2i.ZERO
 
-	var restored_cell: Variant = state.get("grid_cell", grid_cell)
 	if restored_cell is Vector2i:
+		if animate and restored_cell != grid_cell:
+			_animate_restore_to_cell(restored_cell, restored_flip_h)
+			return move_duration
+
 		grid_cell = restored_cell
 
 	_snap_to_cell(grid_cell)
-	sprite.flip_h = bool(state.get("flip_h", sprite.flip_h))
+	sprite.flip_h = restored_flip_h
 	_refresh_sprite_visuals()
+	return 0.0
+
+
+func get_move_duration() -> float:
+	return move_duration
 
 
 func _can_enter(cell: Vector2i) -> bool:
@@ -155,6 +166,25 @@ func _move_to_cell(cell: Vector2i) -> void:
 	_move_tween.finished.connect(_on_move_tween_finished)
 
 
+func _animate_restore_to_cell(cell: Vector2i, flip_h: bool) -> void:
+	var start_cell: Vector2i = grid_cell
+	var target_position: Vector2 = _cell_to_world(cell)
+
+	_is_moving = true
+	_jump_offset = Vector2.ZERO
+	_block_offset = Vector2.ZERO
+	grid_cell = cell
+	_move_start_cell = start_cell
+	_move_direction = cell - start_cell
+
+	_move_tween = create_tween()
+	_move_tween.set_trans(Tween.TRANS_SINE)
+	_move_tween.set_ease(Tween.EASE_OUT)
+	_move_tween.tween_property(self, "global_position", target_position, move_duration)
+	_move_tween.parallel().tween_method(_set_jump_progress, 0.0, 1.0, move_duration)
+	_move_tween.finished.connect(_on_restore_tween_finished.bind(flip_h))
+
+
 func _snap_to_cell(cell: Vector2i) -> void:
 	global_position = _cell_to_world(cell)
 	_jump_offset = Vector2.ZERO
@@ -194,6 +224,16 @@ func _on_move_tween_finished() -> void:
 	move_finished.emit(self, _move_start_cell, grid_cell, _move_direction)
 	_move_start_cell = grid_cell
 	_move_direction = Vector2i.ZERO
+
+
+func _on_restore_tween_finished(flip_h: bool) -> void:
+	_is_moving = false
+	_move_tween = null
+	_jump_offset = Vector2.ZERO
+	_block_offset = Vector2.ZERO
+	sprite.scale = sprite_base_scale
+	sprite.flip_h = flip_h
+	_refresh_sprite_visuals()
 
 
 func consume_queued_direction() -> void:

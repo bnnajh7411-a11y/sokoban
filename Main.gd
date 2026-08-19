@@ -20,6 +20,8 @@ const MOVE_COUNT_TEXT: String = "이동 횟수: %d"
 
 var _goal_cells: Dictionary = {}
 var _undo_history: Array = []
+var _pending_undo_requests: int = 0
+var _undo_chain_running: bool = false
 var _pending_sheep_moves: int = 0
 var _waiting_for_sheep: bool = false
 var _player_move_count: int = 0
@@ -80,7 +82,7 @@ func _update_undo_button_ui() -> void:
 	if undo_button == null:
 		return
 
-	undo_button.disabled = _undo_history.is_empty() or _is_turn_active or _has_active_motion()
+	undo_button.disabled = _undo_history.is_empty() or ((_is_turn_active or _has_active_motion()) and not _undo_chain_running)
 
 
 func _capture_undo_state() -> void:
@@ -99,10 +101,11 @@ func _capture_undo_state() -> void:
 	_update_undo_button_ui()
 
 
-func _restore_undo_state(snapshot: Dictionary) -> void:
+func _restore_undo_state(snapshot: Dictionary, animate: bool = false) -> float:
+	var restore_duration: float = 0.0
 	var player_state: Variant = snapshot.get("player")
 	if player_state is Dictionary:
-		player.restore_grid_state(player_state)
+		restore_duration = max(restore_duration, player.restore_grid_state(player_state, animate))
 
 	var sheep_states: Dictionary = snapshot.get("sheep", {})
 	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
@@ -112,20 +115,23 @@ func _restore_undo_state(snapshot: Dictionary) -> void:
 
 		var sheep_state: Variant = sheep_states.get(String(sheep.get_path()))
 		if sheep_state is Dictionary:
-			sheep.restore_grid_state(sheep_state)
+			restore_duration = max(restore_duration, sheep.restore_grid_state(sheep_state, animate))
 
 	_player_move_count = int(snapshot.get("move_count", _player_move_count))
 	_pending_sheep_moves = 0
 	_waiting_for_sheep = false
-	_is_turn_active = false
+	if not animate:
+		_is_turn_active = false
 	_is_cleared = false
 	_is_game_over = false
-	player.controllable = true
+	player.controllable = not animate
 	result_overlay.visible = false
 	_update_move_count_ui()
 	_stop_sheep_alert_states()
-	_update_sheep_alert_states()
+	if not animate:
+		_update_sheep_alert_states()
 	_update_undo_button_ui()
+	return restore_duration
 
 
 func _collect_goal_cells() -> void:
@@ -287,11 +293,41 @@ func _on_restart_button_pressed() -> void:
 
 
 func _on_undo_button_pressed() -> void:
-	if _undo_history.is_empty() or _is_turn_active or _has_active_motion():
+	if _undo_history.is_empty() or (_has_active_motion() and not _undo_chain_running):
 		return
 
-	var snapshot: Dictionary = _undo_history.pop_back()
-	_restore_undo_state(snapshot)
+	_pending_undo_requests += 1
+	_update_undo_button_ui()
+	_schedule_undo_queue()
+
+
+func _schedule_undo_queue() -> void:
+	if _undo_chain_running:
+		return
+
+	_undo_chain_running = true
+	call_deferred("_process_undo_queue")
+
+
+func _process_undo_queue() -> void:
+	_is_turn_active = true
+	player.controllable = false
+	_update_undo_button_ui()
+
+	while _pending_undo_requests > 0 and not _undo_history.is_empty():
+		_pending_undo_requests -= 1
+
+		var snapshot: Dictionary = _undo_history.pop_back()
+		var restore_duration: float = _restore_undo_state(snapshot, true)
+		if restore_duration > 0.0:
+			await get_tree().create_timer(restore_duration).timeout
+
+	_pending_undo_requests = 0
+
+	player.controllable = true
+	_is_turn_active = false
+	_undo_chain_running = false
+	_update_sheep_alert_states()
 	_update_undo_button_ui()
 
 

@@ -56,9 +56,14 @@ offset_top = 90.0
 offset_right = 144.0
 offset_bottom = 198.0
 scale = Vector2(0.5, 0.5)
+theme_override_font_sizes/font_size = 20
 theme_override_icons/icon = ExtResource("5_vcsgt")
+text = "실행취소
+"
 icon = ExtResource("5_vcsgt")
+flat = true
 icon_alignment = 1
+vertical_icon_alignment = 0
 
 [node name="RetryButton" type="Button" parent="CanvasLayer/Hud" unique_id=1186694230]
 custom_minimum_size = Vector2(120, 32)
@@ -68,9 +73,14 @@ offset_top = 90.0
 offset_right = 220.0
 offset_bottom = 198.0
 scale = Vector2(0.5, 0.5)
+theme_override_font_sizes/font_size = 20
 theme_override_icons/icon = ExtResource("5_vcsgt")
+text = "초기화
+"
 icon = ExtResource("6_c01mt")
+flat = true
 icon_alignment = 1
+vertical_icon_alignment = 0
 
 [node name="ClearOverlay" type="Control" parent="CanvasLayer" unique_id=344761879]
 visible = false
