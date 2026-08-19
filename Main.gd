@@ -7,18 +7,16 @@ const GAME_OVER_TITLE_TEXT: String = "게임 오버"
 const GAME_OVER_MESSAGE_TEXT: String = "플레이어와 양이 겹쳤습니다."
 const SHEEP_GROUP_NAME: StringName = &"sheep"
 const MOVE_COUNT_TEXT: String = "이동 횟수: %d"
-const UNDO_BUTTON_TEXT: String = "실행취소"
 
 @onready var tile_map_layer: TileMapLayer = $TileMapLayer
 @onready var player: GridActor = $Player
-@onready var hud: Control = $CanvasLayer/Hud
+@onready var undo_button: Button = get_node_or_null("CanvasLayer/Hud/UndoButton") as Button
 @onready var move_count_label: Label = $CanvasLayer/Hud/MoveCountLabel
 @onready var result_overlay: Control = $CanvasLayer/ClearOverlay
 @onready var result_title_label: Label = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/TitleLabel
 @onready var result_message_label: Label = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/MessageLabel
 @onready var restart_button: Button = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/RetryButton
 
-var undo_button: Button
 var _goal_cells: Dictionary = {}
 var _undo_history: Array = []
 var _pending_sheep_moves: int = 0
@@ -32,7 +30,6 @@ var _is_game_over: bool = false
 func _ready() -> void:
 	_collect_goal_cells()
 	_setup_clear_ui()
-	_ensure_undo_button()
 	_update_move_count_ui()
 	call_deferred("_bind_turn_flow")
 	_update_sheep_alert_states()
@@ -66,19 +63,7 @@ func _setup_clear_ui() -> void:
 	if not restart_button.pressed.is_connected(_on_restart_button_pressed):
 		restart_button.pressed.connect(_on_restart_button_pressed)
 
-
-func _ensure_undo_button() -> void:
-	undo_button = get_node_or_null("CanvasLayer/Hud/UndoButton") as Button
-	if undo_button == null:
-		undo_button = Button.new()
-		undo_button.name = "UndoButton"
-		undo_button.text = UNDO_BUTTON_TEXT
-		undo_button.position = Vector2(513.0, 72.0)
-		undo_button.size = Vector2(120.0, 32.0)
-		undo_button.custom_minimum_size = Vector2(120.0, 32.0)
-		hud.add_child(undo_button)
-
-	if not undo_button.pressed.is_connected(_on_undo_button_pressed):
+	if undo_button != null and not undo_button.pressed.is_connected(_on_undo_button_pressed):
 		undo_button.pressed.connect(_on_undo_button_pressed)
 
 	_update_undo_button_ui()
