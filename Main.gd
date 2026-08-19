@@ -68,8 +68,10 @@ func _setup_clear_ui() -> void:
 	if not restart_button.pressed.is_connected(_on_restart_button_pressed):
 		restart_button.pressed.connect(_on_restart_button_pressed)
 
-	if undo_button != null and not undo_button.pressed.is_connected(_on_undo_button_pressed):
-		undo_button.pressed.connect(_on_undo_button_pressed)
+	if undo_button != null:
+		undo_button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+		if not undo_button.pressed.is_connected(_on_undo_button_pressed):
+			undo_button.pressed.connect(_on_undo_button_pressed)
 
 	_update_undo_button_ui()
 
@@ -82,7 +84,14 @@ func _update_undo_button_ui() -> void:
 	if undo_button == null:
 		return
 
-	undo_button.disabled = _undo_history.is_empty() or ((_is_turn_active or _has_active_motion()) and not _undo_chain_running)
+	undo_button.disabled = not _can_request_undo()
+
+
+func _can_request_undo() -> bool:
+	if _undo_history.is_empty():
+		return false
+
+	return _undo_chain_running or not (_is_turn_active or _has_active_motion())
 
 
 func _capture_undo_state() -> void:
@@ -293,10 +302,10 @@ func _on_restart_button_pressed() -> void:
 
 
 func _on_undo_button_pressed() -> void:
-	if _undo_history.is_empty() or (_has_active_motion() and not _undo_chain_running):
+	if not _can_request_undo():
 		return
 
-	_pending_undo_requests += 1
+	_pending_undo_requests = min(_pending_undo_requests + 1, _undo_history.size())
 	_update_undo_button_ui()
 	_schedule_undo_queue()
 
@@ -321,6 +330,8 @@ func _process_undo_queue() -> void:
 		var restore_duration: float = _restore_undo_state(snapshot, true)
 		if restore_duration > 0.0:
 			await get_tree().create_timer(restore_duration).timeout
+			while _has_active_motion():
+				await get_tree().process_frame
 
 	_pending_undo_requests = 0
 
