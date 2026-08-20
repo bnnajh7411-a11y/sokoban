@@ -1,6 +1,7 @@
 extends Node2D
 
 const ENTRY_TILE_ATLAS: Vector2i = Vector2i(2, 0)
+const BUTTON_PRESS_SFX: AudioStream = preload("res://audios/slodkabonanza-pop-sound-effect-197846.mp3")
 const REVEAL_DURATION: float = 1.0
 const STAGE_SCENE_PATHS: Array[String] = [
 	"res://scenes/Stage1.tscn",
@@ -41,12 +42,15 @@ func _on_start_button_pressed() -> void:
 	_is_starting = true
 	start_button.disabled = true
 	exit_button.disabled = true
+	_play_button_press_sfx()
 	await _reveal_title_world()
 	if player != null:
 		player.controllable = true
 
 
 func _on_exit_button_pressed() -> void:
+	_play_button_press_sfx()
+	await get_tree().create_timer(0.12).timeout
 	get_tree().quit()
 
 
@@ -123,3 +127,22 @@ func _check_for_stage_entry(cell: Vector2i) -> void:
 		_is_entering_stage = false
 		player.controllable = true
 		push_error("Failed to change scene to %s" % scene_path)
+
+
+func _play_button_press_sfx() -> void:
+	_play_transient_sfx(BUTTON_PRESS_SFX)
+
+
+func _play_transient_sfx(stream: AudioStream) -> void:
+	if stream == null:
+		return
+
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return
+
+	var sfx_player: AudioStreamPlayer = AudioStreamPlayer.new()
+	sfx_player.stream = stream
+	sfx_player.finished.connect(sfx_player.queue_free)
+	tree.root.add_child(sfx_player)
+	sfx_player.play()
