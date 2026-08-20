@@ -1,6 +1,7 @@
 extends Node2D
 
 const ENTRY_TILE_ATLAS: Vector2i = Vector2i(2, 0)
+const PLAYER_MOVE_SFX: AudioStream = preload("res://audios/u_2fbuaev0zn-select-sound-121244.mp3")
 const BUTTON_PRESS_SFX: AudioStream = preload("res://audios/slodkabonanza-pop-sound-effect-197846.mp3")
 const REVEAL_DURATION: float = 1.0
 const STAGE_SCENE_PATHS: Array[String] = [
@@ -21,6 +22,7 @@ const STAGE_SCENE_PATHS: Array[String] = [
 var _is_starting: bool = false
 var _is_entering_stage: bool = false
 var _entry_cell_to_scene_path: Dictionary = {}
+var _title_overlay_locked_hidden: bool = false
 
 
 func _ready() -> void:
@@ -28,6 +30,8 @@ func _ready() -> void:
 		start_button.pressed.connect(_on_start_button_pressed)
 	if not exit_button.pressed.is_connected(_on_exit_button_pressed):
 		exit_button.pressed.connect(_on_exit_button_pressed)
+	if not player.move_started.is_connected(_on_player_move_started):
+		player.move_started.connect(_on_player_move_started)
 	if not player.move_finished.is_connected(_on_player_move_finished):
 		player.move_finished.connect(_on_player_move_finished)
 
@@ -52,6 +56,13 @@ func _on_exit_button_pressed() -> void:
 	_play_button_press_sfx()
 	await get_tree().create_timer(0.12).timeout
 	get_tree().quit()
+
+
+func _on_player_move_started(actor: Node, _from_cell: Vector2i, _to_cell: Vector2i, _direction: Vector2i) -> void:
+	if actor != player:
+		return
+
+	_play_player_move_sfx()
 
 
 func _on_player_move_finished(actor: Node, _from_cell: Vector2i, to_cell: Vector2i, _direction: Vector2i) -> void:
@@ -96,6 +107,7 @@ func _set_reveal_state(alpha: float) -> void:
 		player.modulate.a = clamped_alpha
 
 	if title_overlay != null:
+		title_overlay.visible = clamped_alpha > 0.0 and not _title_overlay_locked_hidden
 		title_overlay.modulate.a = 1.0 - clamped_alpha
 
 
@@ -105,8 +117,7 @@ func _reveal_title_world() -> void:
 	tween.set_ease(Tween.EASE_IN_OUT)
 	tween.tween_method(_set_reveal_state, 0.0, 1.0, REVEAL_DURATION)
 	await tween.finished
-	if title_overlay != null:
-		title_overlay.visible = false
+	_lock_title_overlay_hidden()
 
 
 func _check_for_stage_entry(cell: Vector2i) -> void:
@@ -133,6 +144,10 @@ func _play_button_press_sfx() -> void:
 	_play_transient_sfx(BUTTON_PRESS_SFX)
 
 
+func _play_player_move_sfx() -> void:
+	_play_transient_sfx(PLAYER_MOVE_SFX)
+
+
 func _play_transient_sfx(stream: AudioStream) -> void:
 	if stream == null:
 		return
@@ -146,3 +161,10 @@ func _play_transient_sfx(stream: AudioStream) -> void:
 	sfx_player.finished.connect(sfx_player.queue_free)
 	tree.root.add_child(sfx_player)
 	sfx_player.play()
+
+
+func _lock_title_overlay_hidden() -> void:
+	_title_overlay_locked_hidden = true
+	if title_overlay != null:
+		title_overlay.hide()
+		title_overlay.modulate.a = 0.0

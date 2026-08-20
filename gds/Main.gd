@@ -47,6 +47,20 @@ func _ready() -> void:
 	_update_undo_button_ui()
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if event is not InputEventKey:
+		return
+
+	var key_event: InputEventKey = event as InputEventKey
+	if not key_event.pressed or key_event.echo:
+		return
+
+	if key_event.keycode == KEY_Z or key_event.physical_keycode == KEY_Z:
+		_handle_undo_shortcut()
+	elif key_event.keycode == KEY_X or key_event.physical_keycode == KEY_X:
+		_handle_retry_shortcut()
+
+
 func _bind_turn_flow() -> void:
 	_connect_actor(player)
 
@@ -86,8 +100,14 @@ func _setup_clear_ui() -> void:
 
 	if undo_button != null:
 		undo_button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
+		undo_button.focus_mode = Control.FOCUS_NONE
 		if not undo_button.pressed.is_connected(_on_undo_button_pressed):
 			undo_button.pressed.connect(_on_undo_button_pressed)
+
+	if hud_restart_button != null:
+		hud_restart_button.focus_mode = Control.FOCUS_NONE
+	if restart_button != null:
+		restart_button.focus_mode = Control.FOCUS_NONE
 
 	_update_undo_button_ui()
 
@@ -211,9 +231,6 @@ func _show_clear_ui() -> void:
 	result_overlay.visible = true
 	if next_button != null:
 		next_button.visible = true
-		next_button.grab_focus()
-	else:
-		restart_button.grab_focus()
 	_update_undo_button_ui()
 
 
@@ -232,7 +249,6 @@ func _show_game_over_ui() -> void:
 	result_overlay.visible = true
 	if next_button != null:
 		next_button.visible = false
-	restart_button.grab_focus()
 	_update_undo_button_ui()
 
 
@@ -340,6 +356,19 @@ func _on_undo_button_pressed() -> void:
 	_pending_undo_requests = min(_pending_undo_requests + 1, _undo_history.size())
 	_update_undo_button_ui()
 	_schedule_undo_queue()
+
+
+func _handle_undo_shortcut() -> void:
+	if undo_button == null or undo_button.disabled:
+		return
+
+	_on_undo_button_pressed()
+	get_viewport().set_input_as_handled()
+
+
+func _handle_retry_shortcut() -> void:
+	get_viewport().set_input_as_handled()
+	_on_restart_button_pressed()
 
 
 func _schedule_undo_queue() -> void:
