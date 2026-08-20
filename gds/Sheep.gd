@@ -6,19 +6,23 @@ const ALERT_RANGE_TILES: int = 1
 const ALERT_SHAKE_DISTANCE: float = 1.5
 const ALERT_SHAKE_SPEED: float = 24.0
 
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
+
 var _alert_active: bool = false
 var _alert_time: float = 0.0
 var _alert_offset: Vector2 = Vector2.ZERO
+var _is_removed: bool = false
 
 
 func _ready() -> void:
 	add_to_group(SHEEP_GROUP_NAME)
 	set_process(true)
 	super._ready()
+	_set_removed_state(false)
 
 
 func _process(delta: float) -> void:
-	if not _alert_active or _is_moving:
+	if _is_removed or not _alert_active or _is_moving:
 		return
 
 	_alert_time += delta
@@ -30,7 +34,7 @@ func _process(delta: float) -> void:
 
 
 func react_to_wolf_move(wolf_from: Vector2i, wolf_to: Vector2i) -> bool:
-	if _is_moving:
+	if _is_removed or _is_moving:
 		return false
 
 	if not _is_wolf_in_range(wolf_to):
@@ -43,6 +47,10 @@ func react_to_wolf_move(wolf_from: Vector2i, wolf_to: Vector2i) -> bool:
 	if flee_direction == Vector2i.ZERO:
 		return false
 
+	var target_cell: Vector2i = grid_cell + flee_direction
+	if _is_blocked_by_another_sheep(target_cell):
+		return false
+
 	return move_on_grid(flee_direction)
 
 
@@ -51,6 +59,9 @@ func did_wolf_enter_alert_range(wolf_from: Vector2i, wolf_to: Vector2i) -> bool:
 
 
 func update_player_proximity(player_cell: Vector2i) -> void:
+	if _is_removed:
+		return
+
 	if _is_moving:
 		_stop_alert_shake()
 		return
@@ -62,10 +73,47 @@ func update_player_proximity(player_cell: Vector2i) -> void:
 
 
 func stop_alert_shake() -> void:
+	if _is_removed:
+		return
+
 	_stop_alert_shake()
 
 
+func is_removed() -> bool:
+	return _is_removed
+
+
+func remove_from_board() -> void:
+	_set_removed_state(true)
+
+
+func get_occupied_grid_cells() -> Array:
+	if _is_removed:
+		return []
+
+	return super.get_occupied_grid_cells()
+
+
+func get_grid_state() -> Dictionary:
+	var state: Dictionary = super.get_grid_state()
+	state["is_removed"] = _is_removed
+	return state
+
+
 func restore_grid_state(state: Dictionary, animate: bool = false) -> float:
+	var restored_removed: bool = bool(state.get("is_removed", false))
+	if _move_tween != null:
+		_move_tween.kill()
+		_move_tween = null
+	if _feedback_tween != null:
+		_feedback_tween.kill()
+		_feedback_tween = null
+
+	if restored_removed:
+		_set_removed_state(true)
+		return 0.0
+
+	_set_removed_state(false)
 	var restore_duration: float = super.restore_grid_state(state, animate)
 	_alert_active = false
 	_alert_time = 0.0
@@ -141,4 +189,47 @@ func _on_move_started() -> void:
 
 
 func _refresh_sprite_visuals() -> void:
+	if _is_removed:
+		sprite.position = Vector2.ZERO
+		return
+
 	sprite.position = _jump_offset + _block_offset + _alert_offset
+
+
+func _is_blocked_by_another_sheep(cell: Vector2i) -> bool:
+	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
+		var other_sheep: SheepActor = node as SheepActor
+		if other_sheep == null or other_sheep == self:
+			continue
+
+		if other_sheep.get_occupied_grid_cells().has(cell):
+			return true
+
+	return false
+
+
+func _set_removed_state(removed: bool) -> void:
+	_is_removed = removed
+	_alert_active = false
+	_alert_time = 0.0
+	_alert_offset = Vector2.ZERO
+	_jump_offset = Vector2.ZERO
+	_block_offset = Vector2.ZERO
+	_is_moving = false
+	_queued_direction = Vector2i.ZERO
+	_move_start_cell = grid_cell
+	_move_direction = Vector2i.ZERO
+
+	if _move_tween != null:
+		_move_tween.kill()
+		_move_tween = null
+	if _feedback_tween != null:
+		_feedback_tween.kill()
+		_feedback_tween = null
+
+	visible = not removed
+	if collision_shape != null:
+		collision_shape.disabled = removed
+	set_process(not removed)
+	set_physics_process(not removed)
+	_refresh_sprite_visuals()

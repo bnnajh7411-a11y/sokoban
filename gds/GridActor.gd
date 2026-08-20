@@ -81,6 +81,13 @@ func is_moving() -> bool:
 	return _is_moving
 
 
+func get_occupied_grid_cells() -> Array:
+	if _is_moving:
+		return [_move_start_cell, grid_cell]
+
+	return [grid_cell]
+
+
 func get_grid_state() -> Dictionary:
 	return {
 		"grid_cell": grid_cell,

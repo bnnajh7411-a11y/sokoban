@@ -41,10 +41,7 @@ func _ready() -> void:
 	_setup_clear_ui()
 	_update_move_count_ui()
 	call_deferred("_bind_turn_flow")
-	_update_sheep_alert_states()
 	_update_undo_button_ui()
-	_check_for_game_over()
-	_check_for_clear()
 
 
 func _bind_turn_flow() -> void:
@@ -53,7 +50,9 @@ func _bind_turn_flow() -> void:
 	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
 		_connect_actor(node as GridActor)
 
+	_prune_initial_sheep_state()
 	_update_sheep_alert_states()
+	_check_for_clear()
 
 
 func _connect_actor(actor: GridActor) -> void:
@@ -169,41 +168,53 @@ func _check_for_clear() -> void:
 	if _is_finished():
 		return
 
-	if _has_player_sheep_overlap():
-		_show_game_over_ui()
-		return
-
-	if _has_sheep_on_goal():
+	if not _has_active_sheep():
 		_show_clear_ui()
 
 
 func _check_for_game_over() -> void:
 	if _is_finished():
 		return
-
-	if _has_player_sheep_overlap():
-		_show_game_over_ui()
+	return
 
 
 func _has_player_sheep_overlap() -> bool:
 	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
-		var sheep: GridActor = node as GridActor
-		if sheep != null and sheep.grid_cell == player.grid_cell:
+		var sheep: SheepActor = node as SheepActor
+		if sheep != null and not sheep.is_removed() and sheep.grid_cell == player.grid_cell:
 			return true
 
 	return false
 
 
-func _has_sheep_on_goal() -> bool:
-	if _goal_cells.is_empty():
-		return false
-
+func _has_active_sheep() -> bool:
 	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
-		var sheep: GridActor = node as GridActor
-		if sheep != null and _goal_cells.has(sheep.grid_cell):
+		var sheep: SheepActor = node as SheepActor
+		if sheep != null and not sheep.is_removed():
 			return true
 
 	return false
+
+
+func _remove_sheep_at_cell(cell: Vector2i) -> bool:
+	var removed_any: bool = false
+	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
+		var sheep: SheepActor = node as SheepActor
+		if sheep != null and not sheep.is_removed() and sheep.grid_cell == cell:
+			sheep.remove_from_board()
+			removed_any = true
+
+	return removed_any
+
+
+func _prune_initial_sheep_state() -> void:
+	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
+		var sheep: SheepActor = node as SheepActor
+		if sheep == null or sheep.is_removed():
+			continue
+
+		if _goal_cells.has(sheep.grid_cell) or sheep.grid_cell == player.grid_cell:
+			sheep.remove_from_board()
 
 
 func _show_clear_ui() -> void:
@@ -260,27 +271,27 @@ func _on_actor_move_finished(actor: Node, from_cell: Vector2i, to_cell: Vector2i
 	if _is_finished():
 		return
 
-	if _has_player_sheep_overlap():
-		_show_game_over_ui()
-		return
-
 	if actor == player:
 		_player_move_count += 1
 		_update_move_count_ui()
+		_remove_sheep_at_cell(player.grid_cell)
+		if not _has_active_sheep():
+			_show_clear_ui()
+			return
 		_resolve_sheep_turn(from_cell, to_cell)
 		_update_sheep_alert_states()
 		_update_undo_button_ui()
 		return
 
-	if not _is_sheep_actor(actor):
+	var sheep_actor: SheepActor = actor as SheepActor
+	if sheep_actor == null or sheep_actor.is_removed():
 		return
 
 	_pending_sheep_moves = max(_pending_sheep_moves - 1, 0)
-	if _has_player_sheep_overlap():
-		_show_game_over_ui()
-		return
+	if _goal_cells.has(to_cell) or to_cell == player.grid_cell:
+		sheep_actor.remove_from_board()
 
-	if _has_sheep_on_goal():
+	if not _has_active_sheep():
 		_show_clear_ui()
 		return
 
@@ -303,7 +314,7 @@ func _resolve_sheep_turn(wolf_from: Vector2i, wolf_to: Vector2i) -> void:
 
 	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
 		var sheep: SheepActor = node as SheepActor
-		if sheep != null:
+		if sheep != null and not sheep.is_removed():
 			if sheep.did_wolf_enter_alert_range(wolf_from, wolf_to):
 				should_play_alert_sound = true
 			if sheep.react_to_wolf_move(wolf_from, wolf_to):
@@ -382,14 +393,14 @@ func _update_sheep_alert_states() -> void:
 
 	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
 		var sheep: SheepActor = node as SheepActor
-		if sheep != null:
+		if sheep != null and not sheep.is_removed():
 			sheep.update_player_proximity(player.grid_cell)
 
 
 func _stop_sheep_alert_states() -> void:
 	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
 		var sheep: SheepActor = node as SheepActor
-		if sheep != null:
+		if sheep != null and not sheep.is_removed():
 			sheep.stop_alert_shake()
 
 

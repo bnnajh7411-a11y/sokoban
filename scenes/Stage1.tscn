@@ -347,6 +347,7 @@ func _is_player_in_sight_range() -> bool:
 script = ExtResource("1_qasgr")
 
 [node name="Polygon2D" type="Polygon2D" parent="." unique_id=61569438]
+scale = Vector2(5, 5)
 color = Color(0.4253108, 0.67530113, 0.7696371, 1)
 polygon = PackedVector2Array(-100, -100, -100, 700, 1200, 700, 1200, -100)
 
@@ -461,10 +462,11 @@ text = "양이 목표 타일에 도착했습니다."
 horizontal_alignment = 1
 
 [node name="NextButton" type="Button" parent="CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer" unique_id=201000001]
-layout_mode = 2
 custom_minimum_size = Vector2(120, 32)
+layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Next Stage"
+
 [node name="RetryButton" type="Button" parent="CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer" unique_id=239579919]
 layout_mode = 2
 text = "다시 플레이"
