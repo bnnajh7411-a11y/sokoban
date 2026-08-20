@@ -15,6 +15,10 @@ run/main_scene="uid://m32m7mc7nxp"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Bgm="*uid://c7uk1vxpnt40y"
+
 [internationalization]
 
 locale/locale_filter_mode=0

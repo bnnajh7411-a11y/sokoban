@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://c7uk1vxpnt40y"]
+
+[ext_resource type="AudioStream" uid="uid://fd57hqj1i57p" path="res://audios/Foxpath Ledger.mp3" id="1_o8x2f"]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" unique_id=1584869751]
+stream = ExtResource("1_o8x2f")
+autoplay = true
+parameters/looping = true

@@ -114,6 +114,11 @@ layout_mode = 2
 text = "양이 목표 타일에 도착했습니다."
 horizontal_alignment = 1
 
+[node name="NextButton" type="Button" parent="CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer" unique_id=201000002]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 32)
+theme_override_font_sizes/font_size = 20
+text = "Next Stage"
 [node name="RetryButton" type="Button" parent="CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer" unique_id=36409038]
 layout_mode = 2
 text = "다시 플레이"

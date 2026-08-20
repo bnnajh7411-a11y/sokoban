@@ -1,6 +1,8 @@
 extends Node2D
 
 const GOAL_ATLAS_COORD: Vector2i = Vector2i(2, 0)
+const NEXT_STAGE_BUTTON_TEXT: String = "다음 스테이지"
+const FINAL_STAGE_BUTTON_TEXT: String = "타이틀로"
 const CLEAR_TITLE_TEXT: String = "클리어!"
 const CLEAR_MESSAGE_TEXT: String = "목표 지점에 도착했습니다."
 const GAME_OVER_TITLE_TEXT: String = "게임 오버"
@@ -17,6 +19,7 @@ const MOVE_COUNT_TEXT: String = "이동 횟수: %d"
 @onready var result_overlay: Control = $CanvasLayer/ClearOverlay
 @onready var result_title_label: Label = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/TitleLabel
 @onready var result_message_label: Label = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/MessageLabel
+@onready var next_button: Button = get_node_or_null("CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/NextButton") as Button
 @onready var restart_button: Button = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/RetryButton
 @onready var tutorial_overlay: Node = get_node_or_null("CanvasLayer/TutorialOverlay")
 
@@ -30,6 +33,7 @@ var _player_move_count: int = 0
 var _is_turn_active: bool = false
 var _is_cleared: bool = false
 var _is_game_over: bool = false
+var _next_stage_path: String = ""
 
 
 func _ready() -> void:
@@ -64,11 +68,16 @@ func _connect_actor(actor: GridActor) -> void:
 
 func _setup_clear_ui() -> void:
 	result_overlay.visible = false
+	if next_button != null:
+		next_button.visible = false
 	result_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_configure_next_button()
 	if hud_restart_button != null and not hud_restart_button.pressed.is_connected(_on_restart_button_pressed):
 		hud_restart_button.pressed.connect(_on_restart_button_pressed)
 	if not restart_button.pressed.is_connected(_on_restart_button_pressed):
 		restart_button.pressed.connect(_on_restart_button_pressed)
+	if next_button != null and not next_button.pressed.is_connected(_on_next_button_pressed):
+		next_button.pressed.connect(_on_next_button_pressed)
 
 	if undo_button != null:
 		undo_button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
@@ -209,7 +218,11 @@ func _show_clear_ui() -> void:
 	result_title_label.text = CLEAR_TITLE_TEXT
 	result_message_label.text = CLEAR_MESSAGE_TEXT
 	result_overlay.visible = true
-	restart_button.grab_focus()
+	if next_button != null:
+		next_button.visible = true
+		next_button.grab_focus()
+	else:
+		restart_button.grab_focus()
 	_update_undo_button_ui()
 
 
@@ -225,6 +238,8 @@ func _show_game_over_ui() -> void:
 	result_title_label.text = GAME_OVER_TITLE_TEXT
 	result_message_label.text = GAME_OVER_MESSAGE_TEXT
 	result_overlay.visible = true
+	if next_button != null:
+		next_button.visible = false
 	restart_button.grab_focus()
 	_update_undo_button_ui()
 
@@ -313,6 +328,13 @@ func _on_restart_button_pressed() -> void:
 	get_tree().reload_current_scene()
 
 
+func _on_next_button_pressed() -> void:
+	if _next_stage_path.is_empty():
+		return
+
+	get_tree().change_scene_to_file(_next_stage_path)
+
+
 func _on_undo_button_pressed() -> void:
 	if not _can_request_undo():
 		return
@@ -389,6 +411,41 @@ func _has_active_motion() -> bool:
 
 func _is_finished() -> bool:
 	return _is_cleared or _is_game_over
+
+
+
+
+func _configure_next_button() -> void:
+	_next_stage_path = _get_next_stage_path()
+	if next_button == null:
+		return
+
+	next_button.visible = false
+	if _next_stage_path.is_empty() or _next_stage_path.ends_with("Title.tscn"):
+		next_button.text = FINAL_STAGE_BUTTON_TEXT
+	else:
+		next_button.text = NEXT_STAGE_BUTTON_TEXT
+
+
+func _get_next_stage_path() -> String:
+	if get_tree() == null or get_tree().current_scene == null:
+		return ""
+
+	var current_scene_path: String = String(get_tree().current_scene.scene_file_path)
+	var current_scene_name: String = current_scene_path.get_file().trim_suffix(".tscn")
+	if not current_scene_name.begins_with("Stage"):
+		return "res://scenes/Title.tscn"
+
+	var stage_number_text: String = current_scene_name.trim_prefix("Stage")
+	if not stage_number_text.is_valid_int():
+		return "res://scenes/Title.tscn"
+
+	var next_stage_number: int = int(stage_number_text) + 1
+	var next_stage_path: String = "res://scenes/Stage%d.tscn" % next_stage_number
+	if ResourceLoader.exists(next_stage_path):
+		return next_stage_path
+
+	return "res://scenes/Title.tscn"
 
 
 func _play_sheep_alert_sound() -> void:
