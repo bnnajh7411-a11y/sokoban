@@ -1,6 +1,9 @@
 extends Node2D
 
 const GOAL_ATLAS_COORD: Vector2i = Vector2i(2, 0)
+const PLAYER_MOVE_SFX: AudioStream = preload("res://audios/u_2fbuaev0zn-select-sound-121244.mp3")
+const BUTTON_PRESS_SFX: AudioStream = preload("res://audios/slodkabonanza-pop-sound-effect-197846.mp3")
+const OVERLAP_SFX: AudioStream = preload("res://audios/freesound_community-cartoon-bite-39234.mp3")
 const NEXT_STAGE_BUTTON_TEXT: String = "다음 스테이지"
 const FINAL_STAGE_BUTTON_TEXT: String = "타이틀로"
 const CLEAR_TITLE_TEXT: String = "클리어!"
@@ -52,7 +55,10 @@ func _bind_turn_flow() -> void:
 
 	_prune_initial_sheep_state()
 	_update_sheep_alert_states()
-	_check_for_clear()
+	if _has_player_sheep_overlap():
+		_show_game_over_ui()
+	elif not _has_active_sheep():
+		_show_clear_ui()
 
 
 func _connect_actor(actor: GridActor) -> void:
@@ -164,18 +170,13 @@ func _collect_goal_cells() -> void:
 			_goal_cells[cell] = true
 
 
-func _check_for_clear() -> void:
-	if _is_finished():
-		return
+func _has_active_sheep() -> bool:
+	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
+		var sheep: SheepActor = node as SheepActor
+		if sheep != null and not sheep.is_removed():
+			return true
 
-	if not _has_active_sheep():
-		_show_clear_ui()
-
-
-func _check_for_game_over() -> void:
-	if _is_finished():
-		return
-	return
+	return false
 
 
 func _has_player_sheep_overlap() -> bool:
@@ -187,33 +188,13 @@ func _has_player_sheep_overlap() -> bool:
 	return false
 
 
-func _has_active_sheep() -> bool:
-	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
-		var sheep: SheepActor = node as SheepActor
-		if sheep != null and not sheep.is_removed():
-			return true
-
-	return false
-
-
-func _remove_sheep_at_cell(cell: Vector2i) -> bool:
-	var removed_any: bool = false
-	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
-		var sheep: SheepActor = node as SheepActor
-		if sheep != null and not sheep.is_removed() and sheep.grid_cell == cell:
-			sheep.remove_from_board()
-			removed_any = true
-
-	return removed_any
-
-
 func _prune_initial_sheep_state() -> void:
 	for node in get_tree().get_nodes_in_group(SHEEP_GROUP_NAME):
 		var sheep: SheepActor = node as SheepActor
 		if sheep == null or sheep.is_removed():
 			continue
 
-		if _goal_cells.has(sheep.grid_cell) or sheep.grid_cell == player.grid_cell:
+		if _goal_cells.has(sheep.grid_cell):
 			sheep.remove_from_board()
 
 
@@ -222,7 +203,6 @@ func _show_clear_ui() -> void:
 		return
 
 	_is_cleared = true
-	_is_game_over = false
 	_is_turn_active = false
 	player.controllable = false
 	_stop_sheep_alert_states()
@@ -241,6 +221,7 @@ func _show_game_over_ui() -> void:
 	if _is_finished():
 		return
 
+	_play_overlap_sfx()
 	_is_cleared = false
 	_is_game_over = true
 	_is_turn_active = false
@@ -262,6 +243,7 @@ func _on_actor_move_started(actor: Node, _from_cell: Vector2i, _to_cell: Vector2
 	if actor != player:
 		return
 
+	_play_player_move_sfx()
 	_is_turn_active = true
 	_capture_undo_state()
 	_update_undo_button_ui()
@@ -274,9 +256,8 @@ func _on_actor_move_finished(actor: Node, from_cell: Vector2i, to_cell: Vector2i
 	if actor == player:
 		_player_move_count += 1
 		_update_move_count_ui()
-		_remove_sheep_at_cell(player.grid_cell)
-		if not _has_active_sheep():
-			_show_clear_ui()
+		if _has_player_sheep_overlap():
+			_show_game_over_ui()
 			return
 		_resolve_sheep_turn(from_cell, to_cell)
 		_update_sheep_alert_states()
@@ -288,12 +269,15 @@ func _on_actor_move_finished(actor: Node, from_cell: Vector2i, to_cell: Vector2i
 		return
 
 	_pending_sheep_moves = max(_pending_sheep_moves - 1, 0)
-	if _goal_cells.has(to_cell) or to_cell == player.grid_cell:
-		sheep_actor.remove_from_board()
-
-	if not _has_active_sheep():
-		_show_clear_ui()
+	if to_cell == player.grid_cell:
+		_show_game_over_ui()
 		return
+
+	if _goal_cells.has(to_cell):
+		sheep_actor.remove_from_board()
+		if not _has_active_sheep():
+			_show_clear_ui()
+			return
 
 	if _pending_sheep_moves == 0 and _waiting_for_sheep:
 		_waiting_for_sheep = false
@@ -336,6 +320,7 @@ func _on_restart_button_pressed() -> void:
 	if tutorial_overlay != null and tutorial_overlay.has_method("prepare_for_restart"):
 		tutorial_overlay.call("prepare_for_restart")
 
+	_play_button_press_sfx()
 	get_tree().reload_current_scene()
 
 
@@ -343,6 +328,7 @@ func _on_next_button_pressed() -> void:
 	if _next_stage_path.is_empty():
 		return
 
+	_play_button_press_sfx()
 	get_tree().change_scene_to_file(_next_stage_path)
 
 
@@ -350,6 +336,7 @@ func _on_undo_button_pressed() -> void:
 	if not _can_request_undo():
 		return
 
+	_play_button_press_sfx()
 	_pending_undo_requests = min(_pending_undo_requests + 1, _undo_history.size())
 	_update_undo_button_ui()
 	_schedule_undo_queue()
@@ -422,6 +409,33 @@ func _has_active_motion() -> bool:
 
 func _is_finished() -> bool:
 	return _is_cleared or _is_game_over
+
+
+func _play_player_move_sfx() -> void:
+	_play_transient_sfx(PLAYER_MOVE_SFX)
+
+
+func _play_button_press_sfx() -> void:
+	_play_transient_sfx(BUTTON_PRESS_SFX)
+
+
+func _play_overlap_sfx() -> void:
+	_play_transient_sfx(OVERLAP_SFX)
+
+
+func _play_transient_sfx(stream: AudioStream) -> void:
+	if stream == null:
+		return
+
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return
+
+	var sfx_player: AudioStreamPlayer = AudioStreamPlayer.new()
+	sfx_player.stream = stream
+	sfx_player.finished.connect(sfx_player.queue_free)
+	tree.root.add_child(sfx_player)
+	sfx_player.play()
 
 
 

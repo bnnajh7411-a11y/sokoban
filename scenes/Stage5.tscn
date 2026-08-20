@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://boiwx3wbv6oq8" path="res://actors/Player.tscn" id="6_ecp3n"]
 [ext_resource type="AudioStream" uid="uid://d38mchrsl3i5s" path="res://audios/L01183-002+B+KR_KSL2022_A0031+가축_양_인천 논현고잔동_늘솔길양떼목장에서 나는 아기 양 울음 소리_48khz320kbps_Mono.mp3" id="7_fmj6o"]
 
+[ext_resource type="PackedScene" path="res://scenes/GameUI.tscn" id="5_ui"]
+
 [node name="Stage" type="Node2D" unique_id=1683069215]
 script = ExtResource("1_iuxsh")
 
@@ -20,108 +22,7 @@ position = Vector2(170, 60)
 tile_map_data = PackedByteArray("AAABAAgAAAAAAAAAAAACAAgAAAAAAAAAAAADAAgAAAAAAAAAAAAEAAgAAAAAAAAAAAAFAAgAAAAAAAAAAAAGAAgAAAAAAAAAAAAHAAgAAAAAAAAAAAAIAAgAAAABAAAAAAAJAAgAAAAAAAAAAAAKAAgAAAAAAAAAAAALAAgAAAAAAAAAAAAMAAgAAAAAAAAAAAANAAgAAAAAAAAAAAAOAAgAAAAAAAAAAAAOAAcAAAAAAAAAAAAOAAYAAAAAAAAAAAAOAAUAAAAAAAAAAAANAAUAAAAAAAAAAAANAAQAAAAAAAAAAAANAAMAAAAAAAAAAAANAAIAAAAAAAAAAAANAAEAAAABAAAAAAAOAAEAAAAAAAAAAAAOAAIAAAAAAAAAAAAOAAMAAAAAAAAAAAAOAAQAAAAAAAAAAAANAAYAAAAAAAAAAAANAAcAAAAAAAAAAAAMAAcAAAABAAAAAAALAAcAAAAAAAAAAAAKAAcAAAAAAAAAAAAJAAcAAAAAAAAAAAAIAAcAAAAAAAAAAAAHAAcAAAAAAAAAAAAGAAcAAAAAAAAAAAAGAAYAAAAAAAAAAAAFAAYAAAAAAAAAAAAEAAYAAAABAAAAAAADAAYAAAABAAAAAAACAAYAAAAAAAAAAAACAAcAAAAAAAAAAAABAAcAAAAAAAAAAAADAAcAAAAAAAAAAAAEAAcAAAAAAAAAAAAFAAcAAAAAAAAAAAAHAAYAAAAAAAAAAAAIAAYAAAAAAAAAAAAIAAUAAAABAAAAAAAIAAQAAAAAAAAAAAAJAAQAAAAAAAAAAAAJAAMAAAAAAAAAAAAJAAUAAAABAAAAAAAJAAYAAAAAAAAAAAAKAAUAAAABAAAAAAAKAAQAAAAAAAAAAAAKAAMAAAAAAAAAAAAKAAYAAAAAAAAAAAALAAYAAAAAAAAAAAALAAUAAAAAAAAAAAALAAQAAAAAAAAAAAALAAMAAAABAAAAAAALAAIAAAAAAAAAAAAMAAIAAAAAAAAAAAAMAAMAAAAAAAAAAAAMAAQAAAABAAAAAAAMAAUAAAABAAAAAAAMAAYAAAABAAAAAAAMAAEAAAABAAAAAAALAAEAAAABAAAAAAAKAAEAAAAAAAAAAAAKAAIAAAAAAAAAAAAJAAIAAAABAAAAAAAIAAMAAAABAAAAAAAHAAQAAAAAAAAAAAAHAAUAAAABAAAAAAAGAAUAAAABAAAAAAABAAYAAAAAAAAAAAAGAAQAAAAAAAAAAAAGAAMAAAAAAAAAAAAGAAIAAAAAAAAAAAAHAAIAAAAAAAAAAAAHAAEAAAABAAAAAAAIAAEAAAACAAAAAAAJAAEAAAABAAAAAAAIAAIAAAAAAAAAAAAHAAMAAAABAAAAAAABAAkAAAAAAAAAAAACAAkAAAABAAAAAAADAAkAAAABAAAAAAAEAAkAAAAAAAAAAAAFAAkAAAAAAAAAAAAGAAkAAAAAAAAAAAAHAAkAAAAAAAAAAAAIAAkAAAABAAAAAAAJAAkAAAAAAAAAAAAKAAkAAAAAAAAAAAALAAkAAAAAAAAAAAAMAAkAAAAAAAAAAAANAAkAAAAAAAAAAAAOAAkAAAAAAAAAAAAGAAEAAAABAAAAAAAFAAEAAAAAAAAAAAAEAAEAAAAAAAAAAAADAAEAAAAAAAAAAAACAAEAAAAAAAAAAAABAAEAAAAAAAAAAAABAAUAAAAAAAAAAAABAAQAAAAAAAAAAAABAAMAAAAAAAAAAAABAAIAAAAAAAAAAAACAAIAAAAAAAAAAAACAAMAAAAAAAAAAAACAAQAAAAAAAAAAAACAAUAAAAAAAAAAAADAAUAAAAAAAAAAAADAAQAAAAAAAAAAAADAAMAAAAAAAAAAAADAAIAAAAAAAAAAAAEAAIAAAAAAAAAAAAEAAMAAAAAAAAAAAAEAAQAAAAAAAAAAAAEAAUAAAAAAAAAAAAFAAIAAAABAAAAAAAFAAMAAAABAAAAAAAFAAQAAAABAAAAAAAFAAUAAAAAAAAAAAAPAAEAAAAAAAAAAAAPAAIAAAAAAAAAAAAPAAMAAAAAAAAAAAAPAAQAAAAAAAAAAAAPAAUAAAAAAAAAAAAPAAYAAAAAAAAAAAAPAAcAAAAAAAAAAAAPAAgAAAAAAAAAAAAPAAkAAAAAAAAAAAA=")
 tile_set = ExtResource("2_fmj6o")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=10153195]
-layer = 10
-
-[node name="Hud" type="Control" parent="CanvasLayer" unique_id=424552260]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 12.0
-offset_top = 12.0
-offset_right = 192.0
-offset_bottom = 44.0
-mouse_filter = 2
-
-[node name="MoveCountLabel" type="Label" parent="CanvasLayer/Hud" unique_id=2018376768]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 24.0
-offset_right = 204.0
-offset_bottom = 56.0
-theme_override_font_sizes/font_size = 34
-text = "이동 횟수: 0"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="UndoButton" type="Button" parent="CanvasLayer/Hud" unique_id=2009445308]
-custom_minimum_size = Vector2(120, 32)
-layout_mode = 0
-offset_left = 24.0
-offset_top = 90.0
-offset_right = 144.0
-offset_bottom = 198.0
-scale = Vector2(0.5, 0.5)
-theme_override_font_sizes/font_size = 20
-text = "실행취소"
-icon = ExtResource("3_ujguo")
-flat = true
-icon_alignment = 1
-vertical_icon_alignment = 0
-
-[node name="RetryButton" type="Button" parent="CanvasLayer/Hud" unique_id=930084551]
-custom_minimum_size = Vector2(120, 32)
-layout_mode = 0
-offset_left = 100.0
-offset_top = 90.0
-offset_right = 220.0
-offset_bottom = 198.0
-scale = Vector2(0.5, 0.5)
-theme_override_font_sizes/font_size = 20
-theme_override_icons/icon = ExtResource("3_ujguo")
-text = "초기화"
-icon = ExtResource("4_mrhv5")
-flat = true
-icon_alignment = 1
-vertical_icon_alignment = 0
-
-[node name="ClearOverlay" type="Control" parent="CanvasLayer" unique_id=1941664023]
-visible = false
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Dimmer" type="ColorRect" parent="CanvasLayer/ClearOverlay" unique_id=1747360874]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-color = Color(0, 0, 0, 0.59607846)
-
-[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/ClearOverlay" unique_id=1650877569]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-
-[node name="ClearPanel" type="PanelContainer" parent="CanvasLayer/ClearOverlay/CenterContainer" unique_id=1692065956]
-custom_minimum_size = Vector2(280, 160)
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/ClearOverlay/CenterContainer/ClearPanel" unique_id=999284199]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="TitleLabel" type="Label" parent="CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer" unique_id=1754519817]
-layout_mode = 2
-text = "클리어!"
-horizontal_alignment = 1
-
-[node name="MessageLabel" type="Label" parent="CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer" unique_id=2144241888]
-layout_mode = 2
-text = "양이 목표 타일에 도착했습니다."
-horizontal_alignment = 1
-
-[node name="NextButton" type="Button" parent="CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer" unique_id=201000005]
-layout_mode = 2
-custom_minimum_size = Vector2(120, 32)
-theme_override_font_sizes/font_size = 20
-text = "Next Stage"
-[node name="RetryButton" type="Button" parent="CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer" unique_id=36409038]
-layout_mode = 2
-text = "다시 플레이"
+[node name="CanvasLayer" parent="." instance=ExtResource("5_ui")]
 
 [node name="Sheep" parent="." unique_id=1311717518 instance=ExtResource("5_864yv")]
 position = Vector2(344, 176)
@@ -134,3 +35,5 @@ position = Vector2(912, 369)
 
 [node name="SheepAlertSfx" type="AudioStreamPlayer" parent="." unique_id=1413174324]
 stream = ExtResource("7_fmj6o")
+
+

@@ -8,6 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://dpujglgwqhbnh" path="res://image/Undo.png" id="6_sbhoe"]
 [ext_resource type="Texture2D" uid="uid://dqdopxl3axuhl" path="res://image/Retry.png" id="7_72a61"]
 
+[ext_resource type="PackedScene" path="res://scenes/GameUI.tscn" id="5_ui"]
+
 [node name="Stage" type="Node2D" unique_id=598128310]
 script = ExtResource("1_k48tw")
 
@@ -29,108 +31,3 @@ position = Vector2(734, 414)
 [node name="SheepAlertSfx" type="AudioStreamPlayer" parent="." unique_id=2086403835]
 stream = ExtResource("5_vv8d3")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1468176642]
-layer = 10
-
-[node name="Hud" type="Control" parent="CanvasLayer" unique_id=2144173981]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 12.0
-offset_top = 12.0
-offset_right = 192.0
-offset_bottom = 44.0
-mouse_filter = 2
-
-[node name="MoveCountLabel" type="Label" parent="CanvasLayer/Hud" unique_id=1865274440]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 24.0
-offset_right = 206.0
-offset_bottom = 71.0
-theme_override_font_sizes/font_size = 34
-text = "이동 횟수: 0"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="UndoButton" type="Button" parent="CanvasLayer/Hud" unique_id=2141452287]
-custom_minimum_size = Vector2(120, 32)
-layout_mode = 0
-offset_left = 24.0
-offset_top = 90.0
-offset_right = 144.0
-offset_bottom = 198.0
-scale = Vector2(0.5, 0.5)
-theme_override_font_sizes/font_size = 20
-theme_override_icons/icon = ExtResource("6_sbhoe")
-text = "실행취소
-"
-icon = ExtResource("6_sbhoe")
-flat = true
-icon_alignment = 1
-vertical_icon_alignment = 0
-
-[node name="RetryButton" type="Button" parent="CanvasLayer/Hud" unique_id=1186694230]
-custom_minimum_size = Vector2(120, 32)
-layout_mode = 0
-offset_left = 100.0
-offset_top = 90.0
-offset_right = 220.0
-offset_bottom = 198.0
-scale = Vector2(0.5, 0.5)
-theme_override_font_sizes/font_size = 20
-theme_override_icons/icon = ExtResource("6_sbhoe")
-text = "초기화
-"
-icon = ExtResource("7_72a61")
-flat = true
-icon_alignment = 1
-vertical_icon_alignment = 0
-
-[node name="ClearOverlay" type="Control" parent="CanvasLayer" unique_id=344761879]
-visible = false
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Dimmer" type="ColorRect" parent="CanvasLayer/ClearOverlay" unique_id=163134549]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-color = Color(0, 0, 0, 0.59607846)
-
-[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/ClearOverlay" unique_id=1288090768]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-mouse_filter = 2
-
-[node name="ClearPanel" type="PanelContainer" parent="CanvasLayer/ClearOverlay/CenterContainer" unique_id=270666374]
-custom_minimum_size = Vector2(280, 160)
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/ClearOverlay/CenterContainer/ClearPanel" unique_id=449766507]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="TitleLabel" type="Label" parent="CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer" unique_id=2075858765]
-layout_mode = 2
-text = "클리어!"
-horizontal_alignment = 1
-
-[node name="MessageLabel" type="Label" parent="CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer" unique_id=1697569179]
-layout_mode = 2
-text = "양이 목표 타일에 도착했습니다."
-horizontal_alignment = 1
-
-[node name="NextButton" type="Button" parent="CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer" unique_id=201000004]
-layout_mode = 2
-custom_minimum_size = Vector2(120, 32)
-theme_override_font_sizes/font_size = 20
-text = "Next Stage"
-[node name="RetryButton" type="Button" parent="CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer" unique_id=641465697]
-layout_mode = 2
-text = "다시 플레이"

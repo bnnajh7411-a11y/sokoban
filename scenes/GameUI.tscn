@@ -1,0 +1,109 @@
+[gd_scene format=4]
+
+[ext_resource type="Texture2D" path="res://image/Undo.png" id="1_undo"]
+[ext_resource type="Texture2D" path="res://image/Retry.png" id="2_retry"]
+
+[node name="CanvasLayer" type="CanvasLayer"]
+layer = 10
+
+[node name="Hud" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 192.0
+offset_bottom = 44.0
+mouse_filter = 2
+
+[node name="MoveCountLabel" type="Label" parent="Hud"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 204.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 34
+text = "이동 횟수: 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="UndoButton" type="Button" parent="Hud"]
+custom_minimum_size = Vector2(120, 32)
+layout_mode = 0
+offset_left = 24.0
+offset_top = 90.0
+offset_right = 144.0
+offset_bottom = 198.0
+scale = Vector2(0.5, 0.5)
+theme_override_font_sizes/font_size = 20
+text = "실행취소"
+icon = ExtResource("1_undo")
+flat = true
+icon_alignment = 1
+vertical_icon_alignment = 0
+
+[node name="RetryButton" type="Button" parent="Hud"]
+custom_minimum_size = Vector2(120, 32)
+layout_mode = 0
+offset_left = 100.0
+offset_top = 90.0
+offset_right = 220.0
+offset_bottom = 198.0
+scale = Vector2(0.5, 0.5)
+theme_override_font_sizes/font_size = 20
+text = "초기화"
+icon = ExtResource("2_retry")
+flat = true
+icon_alignment = 1
+vertical_icon_alignment = 0
+
+[node name="ClearOverlay" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dimmer" type="ColorRect" parent="ClearOverlay"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.59607846)
+
+[node name="CenterContainer" type="CenterContainer" parent="ClearOverlay"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="ClearPanel" type="PanelContainer" parent="ClearOverlay/CenterContainer"]
+custom_minimum_size = Vector2(280, 160)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ClearOverlay/CenterContainer/ClearPanel"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="TitleLabel" type="Label" parent="ClearOverlay/CenterContainer/ClearPanel/VBoxContainer"]
+layout_mode = 2
+text = "클리어!"
+horizontal_alignment = 1
+
+[node name="MessageLabel" type="Label" parent="ClearOverlay/CenterContainer/ClearPanel/VBoxContainer"]
+layout_mode = 2
+text = "목표 지점에 도착했습니다."
+horizontal_alignment = 1
+
+[node name="NextButton" type="Button" parent="ClearOverlay/CenterContainer/ClearPanel/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 32)
+theme_override_font_sizes/font_size = 20
+text = "다음 스테이지"
+
+[node name="RetryButton" type="Button" parent="ClearOverlay/CenterContainer/ClearPanel/VBoxContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 32)
+theme_override_font_sizes/font_size = 20
+text = "다시 플레이"
