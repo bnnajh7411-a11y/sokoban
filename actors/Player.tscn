@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://boiwx3wbv6oq8"]
 
-[ext_resource type="Script" uid="uid://c5oy6eo0uukct" path="res://actors/GridActor.gd" id="1"]
+[ext_resource type="Script" uid="uid://c5oy6eo0uukct" path="res://gds/GridActor.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://cy5t2lop1oddt" path="res://image/Wolf.png" id="2_kerl5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]

@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://dus6kw4othdc2"]
 
-[ext_resource type="Script" uid="uid://b711aj681005c" path="res://Main.gd" id="1_c8nos"]
+[ext_resource type="Script" uid="uid://b711aj681005c" path="res://gds/Main.gd" id="1_c8nos"]
 [ext_resource type="TileSet" uid="uid://vpv4llnwj4qi" path="res://generated/level_tileset.tres" id="1_crm5n"]
 [ext_resource type="PackedScene" uid="uid://damggt3ffynxf" path="res://actors/Sheep.tscn" id="2_4bw56"]
 [ext_resource type="PackedScene" uid="uid://boiwx3wbv6oq8" path="res://actors/Player.tscn" id="3_c8nos"]

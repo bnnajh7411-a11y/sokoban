@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://damggt3ffynxf"]
 
-[ext_resource type="Script" uid="uid://e5hcnyjehoyu" path="res://actors/Sheep.gd" id="1"]
+[ext_resource type="Script" uid="uid://e5hcnyjehoyu" path="res://gds/Sheep.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://pqt0vephf4vk" path="res://image/Sheep.png" id="2_nsh4p"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
