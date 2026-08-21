@@ -3,15 +3,13 @@
 [ext_resource type="TileSet" uid="uid://vpv4llnwj4qi" path="res://generated/level_tileset.tres" id="1_06ygk"]
 [ext_resource type="Script" uid="uid://b711aj681005c" path="res://gds/Main.gd" id="1_qasgr"]
 [ext_resource type="PackedScene" uid="uid://damggt3ffynxf" path="res://actors/Sheep.tscn" id="2_hp1su"]
-[ext_resource type="Texture2D" uid="uid://dpujglgwqhbnh" path="res://image/Undo.png" id="3_5mgwk"]
 [ext_resource type="PackedScene" uid="uid://boiwx3wbv6oq8" path="res://actors/Player.tscn" id="3_qasgr"]
-[ext_resource type="Texture2D" uid="uid://dqdopxl3axuhl" path="res://image/Retry.png" id="4_cskvh"]
+[ext_resource type="PackedScene" uid="uid://buv7dxqf55wu4" path="res://scenes/GameUI.tscn" id="4_ui"]
+[ext_resource type="Script" uid="uid://cblu8a023gdar" path="res://gds/Stage1Tutorial.gd" id="5_tutorial"]
 [ext_resource type="AudioStream" uid="uid://d38mchrsl3i5s" path="res://audios/L01183-002+B+KR_KSL2022_A0031+가축_양_인천 논현고잔동_늘솔길양떼목장에서 나는 아기 양 울음 소리_48khz320kbps_Mono.mp3" id="8_d6jml"]
 
-[ext_resource type="PackedScene" path="res://scenes/GameUI.tscn" id="4_ui"]
-[ext_resource type="Script" uid="uid://cblu8a023gdar" path="res://gds/Stage1Tutorial.gd" id="5_tutorial"]
-
 [node name="Stage" type="Node2D" unique_id=1683069215]
+script = ExtResource("1_qasgr")
 
 [node name="Polygon2D" type="Polygon2D" parent="." unique_id=61569438]
 scale = Vector2(5, 5)
@@ -35,9 +33,9 @@ position = Vector2(24, 87)
 color = Color(0.93333334, 0.827451, 0.53333336, 0.87058824)
 polygon = PackedVector2Array(0, 0, 0, 100, 160, 100, 160, 0, 150, 10, 150, 90, 10, 90, 10, 10, 150, 10, 160, 0)
 
-[node name="CanvasLayer" parent="." instance=ExtResource("4_ui")]
+[node name="CanvasLayer" parent="." unique_id=1938794851 instance=ExtResource("4_ui")]
 
-[node name="TutorialOverlay" type="Control" parent="CanvasLayer"]
+[node name="TutorialOverlay" type="Control" parent="CanvasLayer" unique_id=1968801112]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -47,13 +45,13 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("5_tutorial")
 
-[node name="MessageOverlay" type="Control" parent="CanvasLayer/TutorialOverlay"]
+[node name="MessageOverlay" type="Control" parent="CanvasLayer/TutorialOverlay" unique_id=1424414161]
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 
-[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/TutorialOverlay/MessageOverlay"]
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/TutorialOverlay/MessageOverlay" unique_id=203487099]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -66,17 +64,17 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="TutorialPanel" type="PanelContainer" parent="CanvasLayer/TutorialOverlay/MessageOverlay/CenterContainer"]
+[node name="TutorialPanel" type="PanelContainer" parent="CanvasLayer/TutorialOverlay/MessageOverlay/CenterContainer" unique_id=24328753]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/TutorialOverlay/MessageOverlay/CenterContainer/TutorialPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/TutorialOverlay/MessageOverlay/CenterContainer/TutorialPanel" unique_id=761142613]
 layout_mode = 2
 theme_override_constants/margin_left = 22
 theme_override_constants/margin_top = 18
 theme_override_constants/margin_right = 22
 theme_override_constants/margin_bottom = 18
 
-[node name="MessageLabel" type="Label" parent="CanvasLayer/TutorialOverlay/MessageOverlay/CenterContainer/TutorialPanel/MarginContainer"]
+[node name="MessageLabel" type="Label" parent="CanvasLayer/TutorialOverlay/MessageOverlay/CenterContainer/TutorialPanel/MarginContainer" unique_id=187131931]
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
 text = "방향키로 늑대를 움직여 보세요."
@@ -91,5 +89,3 @@ position = Vector2(771, 415)
 
 [node name="SheepAlertSfx" type="AudioStreamPlayer" parent="." unique_id=1662398590]
 stream = ExtResource("8_d6jml")
-
-

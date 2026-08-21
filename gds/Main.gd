@@ -6,10 +6,10 @@ const BUTTON_PRESS_SFX: AudioStream = preload("res://audios/slodkabonanza-pop-so
 const OVERLAP_SFX: AudioStream = preload("res://audios/freesound_community-cartoon-bite-39234.mp3")
 const NEXT_STAGE_BUTTON_TEXT: String = "다음 스테이지"
 const FINAL_STAGE_BUTTON_TEXT: String = "타이틀로"
-const CLEAR_TITLE_TEXT: String = "클리어!"
-const CLEAR_MESSAGE_TEXT: String = "목표 지점에 도착했습니다."
+const CLEAR_TITLE_TEXT: String = "클리어"
+const CLEAR_MESSAGE_TEXT: String = "%d번 만에 양을 안전한 목장에 넣었습니다."
 const GAME_OVER_TITLE_TEXT: String = "게임 오버"
-const GAME_OVER_MESSAGE_TEXT: String = "플레이어와 양이 겹쳤습니다."
+const GAME_OVER_MESSAGE_TEXT: String = "늑대가 양을 먹어버렸습니다."
 const SHEEP_GROUP_NAME: StringName = &"sheep"
 const MOVE_COUNT_TEXT: String = "이동 횟수: %d"
 
@@ -236,12 +236,12 @@ func _show_clear_ui() -> void:
 	player.controllable = false
 	_stop_sheep_alert_states()
 	result_title_label.text = CLEAR_TITLE_TEXT
-	result_message_label.text = CLEAR_MESSAGE_TEXT
+	result_message_label.text = CLEAR_MESSAGE_TEXT % _player_move_count
 	result_overlay.visible = true
 	if next_button != null:
 		next_button.visible = true
 	if title_button != null:
-		title_button.visible = false
+		title_button.visible = true
 	_update_undo_button_ui()
 
 

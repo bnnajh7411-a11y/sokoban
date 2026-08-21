@@ -18,11 +18,15 @@ const STAGE_SCENE_PATHS: Array[String] = [
 @onready var player: GridActor = $Player
 @onready var stage_number: Control = $CanvasLayer/StageNumber
 @onready var title_overlay: Control = $CanvasLayer/ClearOverlay
+@onready var exit_confirm_overlay: Control = $CanvasLayer/ExitConfirmOverlay
 @onready var start_button: Button = $CanvasLayer/ClearOverlay/CenterContainer/VBoxContainer/StartButton
 @onready var exit_button: Button = $CanvasLayer/ClearOverlay/CenterContainer/VBoxContainer/ExitButton
+@onready var confirm_exit_button: Button = $CanvasLayer/ExitConfirmOverlay/CenterContainer/PanelContainer/VBoxContainer/ButtonContainer/ConfirmButton
+@onready var cancel_exit_button: Button = $CanvasLayer/ExitConfirmOverlay/CenterContainer/PanelContainer/VBoxContainer/ButtonContainer/CancelButton
 
 var _is_starting: bool = false
 var _is_entering_stage: bool = false
+var _is_exit_shortcut_enabled: bool = false
 var _entry_cell_to_scene_path: Dictionary = {}
 var _title_overlay_locked_hidden: bool = false
 
@@ -32,13 +36,19 @@ func _ready() -> void:
 		start_button.pressed.connect(_on_start_button_pressed)
 	if not exit_button.pressed.is_connected(_on_exit_button_pressed):
 		exit_button.pressed.connect(_on_exit_button_pressed)
+	if confirm_exit_button != null and not confirm_exit_button.pressed.is_connected(_on_confirm_exit_button_pressed):
+		confirm_exit_button.pressed.connect(_on_confirm_exit_button_pressed)
+	if cancel_exit_button != null and not cancel_exit_button.pressed.is_connected(_on_cancel_exit_button_pressed):
+		cancel_exit_button.pressed.connect(_on_cancel_exit_button_pressed)
 	if not player.move_started.is_connected(_on_player_move_started):
 		player.move_started.connect(_on_player_move_started)
 	if not player.move_finished.is_connected(_on_player_move_finished):
 		player.move_finished.connect(_on_player_move_finished)
 
 	_collect_stage_entry_cells()
+	_hide_exit_confirm_overlay()
 	if _should_start_in_active_state():
+		_is_exit_shortcut_enabled = true
 		_lock_title_overlay_hidden()
 		_set_reveal_state(1.0)
 		if player != null:
@@ -59,14 +69,46 @@ func _on_start_button_pressed() -> void:
 	_play_button_press_sfx()
 	_lock_title_overlay_hidden()
 	await _reveal_title_world()
+	_is_exit_shortcut_enabled = true
 	if player != null:
 		player.controllable = true
 
 
 func _on_exit_button_pressed() -> void:
 	_play_button_press_sfx()
+	_show_exit_confirm_overlay()
+
+
+func _on_confirm_exit_button_pressed() -> void:
+	_play_button_press_sfx()
 	await get_tree().create_timer(0.12).timeout
 	get_tree().quit()
+
+
+func _on_cancel_exit_button_pressed() -> void:
+	_play_button_press_sfx()
+	_hide_exit_confirm_overlay()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not (event is InputEventKey):
+		return
+
+	var key_event: InputEventKey = event as InputEventKey
+	if not key_event.pressed or key_event.echo:
+		return
+
+	if key_event.keycode != KEY_ESCAPE and key_event.physical_keycode != KEY_ESCAPE:
+		return
+
+	if not _is_exit_shortcut_enabled:
+		return
+
+	get_viewport().set_input_as_handled()
+	if exit_confirm_overlay != null and exit_confirm_overlay.visible:
+		_on_cancel_exit_button_pressed()
+	else:
+		_show_exit_confirm_overlay()
 
 
 func _on_player_move_started(actor: Node, _from_cell: Vector2i, _to_cell: Vector2i, _direction: Vector2i) -> void:
@@ -187,6 +229,21 @@ func _lock_title_overlay_hidden() -> void:
 	if title_overlay != null:
 		title_overlay.hide()
 		title_overlay.modulate.a = 0.0
+
+
+func _show_exit_confirm_overlay() -> void:
+	if exit_confirm_overlay == null:
+		_on_confirm_exit_button_pressed()
+		return
+
+	exit_confirm_overlay.show()
+	if confirm_exit_button != null:
+		confirm_exit_button.grab_focus()
+
+
+func _hide_exit_confirm_overlay() -> void:
+	if exit_confirm_overlay != null:
+		exit_confirm_overlay.hide()
 
 
 func _should_start_in_active_state() -> bool:
