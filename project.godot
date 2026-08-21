@@ -21,8 +21,12 @@ Bgm="*uid://c7uk1vxpnt40y"
 
 [display]
 
+window/size/viewport_width=1152
+window/size/viewport_height=648
 window/size/resizable=false
 window/size/borderless=true
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [internationalization]
 

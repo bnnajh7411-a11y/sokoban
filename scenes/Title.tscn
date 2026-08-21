@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://m32m7mc7nxp"]
 
 [ext_resource type="Script" uid="uid://chutnsekrggua" path="res://gds/Title.gd" id="1_title"]
+[ext_resource type="Texture2D" uid="uid://mvxbpemqhddq" path="res://image/Cloud.png" id="2_aa56r"]
 [ext_resource type="TileSet" uid="uid://vpv4llnwj4qi" path="res://generated/level_tileset.tres" id="2_mh4yb"]
 [ext_resource type="PackedScene" uid="uid://boiwx3wbv6oq8" path="res://actors/Player.tscn" id="3_wq2ky"]
 [ext_resource type="PackedScene" uid="uid://c7uk1vxpnt40y" path="res://scenes/BGM.tscn" id="4_iyajp"]
@@ -12,6 +13,16 @@ script = ExtResource("1_title")
 color = Color(0.4253108, 0.67530113, 0.7696371, 1)
 polygon = PackedVector2Array(-100, -100, -100, 700, 1200, 700, 1200, -100)
 
+[node name="Cloud" type="Sprite2D" parent="." unique_id=1069630858]
+position = Vector2(947.25, 139.75002)
+scale = Vector2(0.43349996, 0.43349996)
+texture = ExtResource("2_aa56r")
+
+[node name="Cloud2" type="Sprite2D" parent="." unique_id=609717003]
+position = Vector2(37.125015, 470.375)
+scale = Vector2(0.41774997, 0.37274998)
+texture = ExtResource("2_aa56r")
+
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=971561381]
 position = Vector2(170, 60)
 tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAAACAAEAAAAAAAAAAAADAAEAAAAAAAAAAAAEAAEAAAAAAAAAAAAFAAEAAAAAAAAAAAAGAAEAAAAAAAAAAAAHAAEAAAAAAAAAAAAIAAEAAAAAAAAAAAAJAAEAAAAAAAAAAAAKAAEAAAAAAAAAAAALAAEAAAAAAAAAAAAMAAEAAAAAAAAAAAANAAEAAAAAAAAAAAAOAAEAAAAAAAAAAAAPAAEAAAAAAAAAAAABAAIAAAAAAAAAAAACAAIAAAAAAAAAAAADAAIAAAAAAAAAAAAEAAIAAAAAAAAAAAAFAAIAAAAAAAAAAAAGAAIAAAAAAAAAAAAHAAIAAAAAAAAAAAAIAAIAAAAAAAAAAAAJAAIAAAAAAAAAAAAKAAIAAAAAAAAAAAALAAIAAAAAAAAAAAAMAAIAAAAAAAAAAAANAAIAAAAAAAAAAAAOAAIAAAAAAAAAAAAPAAIAAAAAAAAAAAABAAMAAAAAAAAAAAACAAMAAAAAAAAAAAADAAMAAAACAAAAAAAEAAMAAAAAAAAAAAAFAAMAAAAAAAAAAAAGAAMAAAAAAAAAAAAHAAMAAAAAAAAAAAAIAAMAAAACAAAAAAAJAAMAAAAAAAAAAAAKAAMAAAAAAAAAAAALAAMAAAAAAAAAAAAMAAMAAAAAAAAAAAAOAAMAAAAAAAAAAAAPAAMAAAAAAAAAAAABAAQAAAAAAAAAAAACAAQAAAAAAAAAAAADAAQAAAAAAAAAAAAEAAQAAAAAAAAAAAAFAAQAAAAAAAAAAAAGAAQAAAAAAAAAAAAHAAQAAAAAAAAAAAAIAAQAAAAAAAAAAAAJAAQAAAAAAAAAAAAKAAQAAAAAAAAAAAALAAQAAAAAAAAAAAAMAAQAAAAAAAAAAAANAAQAAAAAAAAAAAAOAAQAAAAAAAAAAAAPAAQAAAAAAAAAAAABAAUAAAAAAAAAAAACAAUAAAAAAAAAAAADAAUAAAAAAAAAAAAEAAUAAAAAAAAAAAAFAAUAAAAAAAAAAAAGAAUAAAAAAAAAAAAHAAUAAAAAAAAAAAAIAAUAAAAAAAAAAAAJAAUAAAAAAAAAAAAKAAUAAAAAAAAAAAALAAUAAAAAAAAAAAAMAAUAAAAAAAAAAAANAAUAAAAAAAAAAAAOAAUAAAAAAAAAAAAPAAUAAAAAAAAAAAABAAYAAAAAAAAAAAACAAYAAAAAAAAAAAADAAYAAAAAAAAAAAAEAAYAAAAAAAAAAAAFAAYAAAAAAAAAAAAGAAYAAAAAAAAAAAAHAAYAAAAAAAAAAAAIAAYAAAAAAAAAAAAJAAYAAAAAAAAAAAAKAAYAAAAAAAAAAAALAAYAAAAAAAAAAAAMAAYAAAAAAAAAAAANAAYAAAAAAAAAAAAOAAYAAAAAAAAAAAAPAAYAAAAAAAAAAAABAAcAAAAAAAAAAAACAAcAAAAAAAAAAAADAAcAAAACAAAAAAAEAAcAAAAAAAAAAAAFAAcAAAAAAAAAAAAGAAcAAAAAAAAAAAAHAAcAAAAAAAAAAAAIAAcAAAACAAAAAAAJAAcAAAAAAAAAAAAKAAcAAAAAAAAAAAALAAcAAAAAAAAAAAAMAAcAAAAAAAAAAAANAAcAAAACAAAAAAAOAAcAAAAAAAAAAAAPAAcAAAAAAAAAAAABAAgAAAAAAAAAAAACAAgAAAAAAAAAAAADAAgAAAAAAAAAAAAEAAgAAAAAAAAAAAAFAAgAAAAAAAAAAAAGAAgAAAAAAAAAAAAHAAgAAAAAAAAAAAAIAAgAAAAAAAAAAAAJAAgAAAAAAAAAAAAKAAgAAAAAAAAAAAALAAgAAAAAAAAAAAAMAAgAAAAAAAAAAAANAAgAAAAAAAAAAAAOAAgAAAAAAAAAAAAPAAgAAAAAAAAAAAABAAkAAAAAAAAAAAACAAkAAAAAAAAAAAADAAkAAAAAAAAAAAAEAAkAAAAAAAAAAAAFAAkAAAAAAAAAAAAGAAkAAAAAAAAAAAAHAAkAAAAAAAAAAAAIAAkAAAAAAAAAAAAJAAkAAAAAAAAAAAAKAAkAAAAAAAAAAAALAAkAAAAAAAAAAAAMAAkAAAAAAAAAAAANAAkAAAAAAAAAAAAOAAkAAAAAAAAAAAAPAAkAAAAAAAAAAAANAAMAAAACAAAAAAA=")
@@ -19,80 +30,6 @@ tile_set = ExtResource("2_mh4yb")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1468176642]
 layer = 10
-
-[node name="StageNumber" type="Control" parent="CanvasLayer" unique_id=1764684293]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 2.0
-offset_top = -2.0
-offset_right = 42.0
-offset_bottom = 38.0
-
-[node name="Label1" type="Label" parent="CanvasLayer/StageNumber" unique_id=789806651]
-layout_mode = 0
-offset_left = 313.0
-offset_top = 207.0
-offset_right = 359.0
-offset_bottom = 253.0
-theme_override_font_sizes/font_size = 25
-text = "1"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Label2" type="Label" parent="CanvasLayer/StageNumber" unique_id=1010624107]
-layout_mode = 0
-offset_left = 553.0
-offset_top = 207.0
-offset_right = 599.0
-offset_bottom = 253.0
-theme_override_font_sizes/font_size = 25
-text = "2"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Label3" type="Label" parent="CanvasLayer/StageNumber" unique_id=1320877123]
-layout_mode = 0
-offset_left = 793.0
-offset_top = 207.0
-offset_right = 839.0
-offset_bottom = 253.0
-theme_override_font_sizes/font_size = 25
-text = "3"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Label4" type="Label" parent="CanvasLayer/StageNumber" unique_id=223643845]
-layout_mode = 0
-offset_left = 313.0
-offset_top = 399.0
-offset_right = 359.0
-offset_bottom = 445.0
-theme_override_font_sizes/font_size = 25
-text = "4"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Label5" type="Label" parent="CanvasLayer/StageNumber" unique_id=3265720]
-layout_mode = 0
-offset_left = 553.0
-offset_top = 399.0
-offset_right = 599.0
-offset_bottom = 445.0
-theme_override_font_sizes/font_size = 25
-text = "5"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Label6" type="Label" parent="CanvasLayer/StageNumber" unique_id=1224435918]
-layout_mode = 0
-offset_left = 793.0
-offset_top = 399.0
-offset_right = 839.0
-offset_bottom = 445.0
-theme_override_font_sizes/font_size = 25
-text = "6"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="ClearOverlay" type="Control" parent="CanvasLayer" unique_id=1251669901]
 layout_mode = 3
@@ -190,8 +127,74 @@ custom_minimum_size = Vector2(120, 36)
 layout_mode = 2
 text = "취소"
 
+[node name="StageNumber" type="Node2D" parent="." unique_id=1764684293]
+position = Vector2(2, -2)
+
+[node name="Label1" type="Label" parent="StageNumber" unique_id=789806651]
+offset_left = 313.0
+offset_top = 207.0
+offset_right = 359.0
+offset_bottom = 253.0
+theme_override_font_sizes/font_size = 25
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="StageNumber" unique_id=1010624107]
+offset_left = 553.0
+offset_top = 207.0
+offset_right = 599.0
+offset_bottom = 253.0
+theme_override_font_sizes/font_size = 25
+text = "2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label3" type="Label" parent="StageNumber" unique_id=1320877123]
+offset_left = 793.0
+offset_top = 207.0
+offset_right = 839.0
+offset_bottom = 253.0
+theme_override_font_sizes/font_size = 25
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label4" type="Label" parent="StageNumber" unique_id=223643845]
+offset_left = 313.0
+offset_top = 399.0
+offset_right = 359.0
+offset_bottom = 445.0
+theme_override_font_sizes/font_size = 25
+text = "4"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label5" type="Label" parent="StageNumber" unique_id=3265720]
+offset_left = 553.0
+offset_top = 399.0
+offset_right = 599.0
+offset_bottom = 445.0
+theme_override_font_sizes/font_size = 25
+text = "5"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label6" type="Label" parent="StageNumber" unique_id=1224435918]
+offset_left = 793.0
+offset_top = 399.0
+offset_right = 839.0
+offset_bottom = 445.0
+theme_override_font_sizes/font_size = 25
+text = "6"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="Player" parent="." unique_id=1088558520 instance=ExtResource("3_wq2ky")]
 visible = false
 position = Vector2(240, 211)
 
 [node name="AudioStreamPlayer" parent="." unique_id=1584869751 instance=ExtResource("4_iyajp")]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1800000001]
+position = Vector2(550, 300)

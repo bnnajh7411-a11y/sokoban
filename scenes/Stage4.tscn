@@ -2,13 +2,10 @@
 
 [ext_resource type="Script" uid="uid://b711aj681005c" path="res://gds/Main.gd" id="1_k48tw"]
 [ext_resource type="TileSet" uid="uid://vpv4llnwj4qi" path="res://generated/level_tileset.tres" id="2_jhra0"]
+[ext_resource type="Texture2D" uid="uid://mvxbpemqhddq" path="res://image/Cloud.png" id="2_o265l"]
 [ext_resource type="PackedScene" uid="uid://boiwx3wbv6oq8" path="res://actors/Player.tscn" id="3_be11i"]
 [ext_resource type="PackedScene" uid="uid://damggt3ffynxf" path="res://actors/Sheep.tscn" id="4_usr5q"]
 [ext_resource type="AudioStream" uid="uid://d38mchrsl3i5s" path="res://audios/L01183-002+B+KR_KSL2022_A0031+가축_양_인천 논현고잔동_늘솔길양떼목장에서 나는 아기 양 울음 소리_48khz320kbps_Mono.mp3" id="5_vv8d3"]
-[ext_resource type="Texture2D" uid="uid://dpujglgwqhbnh" path="res://image/Undo.png" id="6_sbhoe"]
-[ext_resource type="Texture2D" uid="uid://dqdopxl3axuhl" path="res://image/Retry.png" id="7_72a61"]
-
-[ext_resource type="PackedScene" path="res://scenes/GameUI.tscn" id="5_ui"]
 
 [node name="Stage" type="Node2D" unique_id=598128310]
 script = ExtResource("1_k48tw")
@@ -16,6 +13,16 @@ script = ExtResource("1_k48tw")
 [node name="Polygon2D" type="Polygon2D" parent="." unique_id=1738251972]
 color = Color(0.4253108, 0.67530113, 0.7696371, 1)
 polygon = PackedVector2Array(-100, -100, -100, 700, 1200, 700, 1200, -100)
+
+[node name="Cloud" type="Sprite2D" parent="." unique_id=429132310]
+position = Vector2(947.25, 139.75002)
+scale = Vector2(0.43349996, 0.43349996)
+texture = ExtResource("2_o265l")
+
+[node name="Cloud2" type="Sprite2D" parent="." unique_id=2106631370]
+position = Vector2(37.125015, 470.375)
+scale = Vector2(0.41774997, 0.37274998)
+texture = ExtResource("2_o265l")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=971561381]
 position = Vector2(170, 60)
@@ -31,3 +38,5 @@ position = Vector2(734, 414)
 [node name="SheepAlertSfx" type="AudioStreamPlayer" parent="." unique_id=2086403835]
 stream = ExtResource("5_vv8d3")
 
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1800000005]
+position = Vector2(550, 300)

@@ -16,7 +16,7 @@ const STAGE_SCENE_PATHS: Array[String] = [
 
 @onready var tile_map_layer: TileMapLayer = $TileMapLayer
 @onready var player: GridActor = $Player
-@onready var stage_number: Control = $CanvasLayer/StageNumber
+@onready var stage_number: CanvasItem = $StageNumber
 @onready var title_overlay: Control = $CanvasLayer/ClearOverlay
 @onready var exit_confirm_overlay: Control = $CanvasLayer/ExitConfirmOverlay
 @onready var start_button: Button = $CanvasLayer/ClearOverlay/CenterContainer/VBoxContainer/StartButton

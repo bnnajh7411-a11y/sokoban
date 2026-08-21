@@ -3,7 +3,7 @@ extends Control
 const SHEEP_GROUP_NAME: StringName = &"sheep"
 const OPENING_BODY_TEXT: String = "방향키로 늑대를 움직여 보세요."
 const SHEEP_HINT_TEXT: String = "양은 늑대가 가까이 오면 도망가요."
-const UNDO_HINT_TEXT: String = "실수하면 왼쪽 위 실행취소나 초기화 버튼으로 되돌릴 수 있어요."
+const UNDO_HINT_TEXT: String = "실수하면 왼쪽 위 실행취소(z)나 초기화 버튼(x)으로 되돌릴 수 있어요."
 const GOAL_HINT_TEXT: String = "양을 진한 초록 칸으로 유도해 보세요."
 const SIGHT_ALERT_RANGE_TILES: int = 1
 const TIP_DURATION_SECONDS: float = 3.2
@@ -13,7 +13,7 @@ static var _pending_restore_state: Dictionary = {}
 @onready var message_overlay: Control = $MessageOverlay
 @onready var message_label: Label = $MessageOverlay/CenterContainer/TutorialPanel/MarginContainer/MessageLabel
 @onready var sight: CanvasItem = get_node_or_null("../../Sight") as CanvasItem
-@onready var highlight: CanvasItem = get_node_or_null("../../Highlight") as CanvasItem
+@onready var highlight: CanvasItem = get_node_or_null("../Hud/Highlight") as CanvasItem
 @onready var player: GridActor = get_node_or_null("../../Player") as GridActor
 @onready var undo_button: Button = get_node_or_null("../Hud/UndoButton") as Button
 @onready var clear_overlay: Control = get_node_or_null("../ClearOverlay") as Control

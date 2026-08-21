@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://1reruam10vck"]
 
 [ext_resource type="Script" uid="uid://b711aj681005c" path="res://gds/Main.gd" id="1_p5q48"]
+[ext_resource type="Texture2D" uid="uid://mvxbpemqhddq" path="res://image/Cloud.png" id="2_6lqn4"]
 [ext_resource type="TileSet" uid="uid://vpv4llnwj4qi" path="res://generated/level_tileset.tres" id="2_g13dc"]
 [ext_resource type="PackedScene" uid="uid://buv7dxqf55wu4" path="res://scenes/GameUI.tscn" id="5_ui"]
 [ext_resource type="PackedScene" uid="uid://damggt3ffynxf" path="res://actors/Sheep.tscn" id="5_wx3gq"]
@@ -13,6 +14,16 @@ script = ExtResource("1_p5q48")
 [node name="Polygon2D" type="Polygon2D" parent="." unique_id=42354721]
 color = Color(0.4253108, 0.67530113, 0.7696371, 1)
 polygon = PackedVector2Array(-100, -100, -100, 700, 1200, 700, 1200, -100)
+
+[node name="Cloud" type="Sprite2D" parent="." unique_id=156745317]
+position = Vector2(947.25, 139.75)
+scale = Vector2(0.43349996, 0.43349996)
+texture = ExtResource("2_6lqn4")
+
+[node name="Cloud2" type="Sprite2D" parent="." unique_id=438324488]
+position = Vector2(37.125, 470.375)
+scale = Vector2(0.41774997, 0.37274998)
+texture = ExtResource("2_6lqn4")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=2025735138]
 position = Vector2(170, 60)
@@ -32,3 +43,6 @@ position = Vector2(912, 369)
 
 [node name="SheepAlertSfx" type="AudioStreamPlayer" parent="." unique_id=1369212988]
 stream = ExtResource("7_g13dc")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1800000007]
+position = Vector2(550, 300)
