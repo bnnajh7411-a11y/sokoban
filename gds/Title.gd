@@ -4,6 +4,7 @@ const ENTRY_TILE_ATLAS: Vector2i = Vector2i(2, 0)
 const PLAYER_MOVE_SFX: AudioStream = preload("res://audios/u_2fbuaev0zn-select-sound-121244.mp3")
 const BUTTON_PRESS_SFX: AudioStream = preload("res://audios/slodkabonanza-pop-sound-effect-197846.mp3")
 const REVEAL_DURATION: float = 1.0
+const START_IN_ACTIVE_STATE_META_KEY: StringName = &"title_start_in_active_state"
 const STAGE_SCENE_PATHS: Array[String] = [
 	"res://scenes/Stage1.tscn",
 	"res://scenes/Stage2.tscn",
@@ -15,6 +16,7 @@ const STAGE_SCENE_PATHS: Array[String] = [
 
 @onready var tile_map_layer: TileMapLayer = $TileMapLayer
 @onready var player: GridActor = $Player
+@onready var stage_number: Control = $CanvasLayer/StageNumber
 @onready var title_overlay: Control = $CanvasLayer/ClearOverlay
 @onready var start_button: Button = $CanvasLayer/ClearOverlay/CenterContainer/VBoxContainer/StartButton
 @onready var exit_button: Button = $CanvasLayer/ClearOverlay/CenterContainer/VBoxContainer/ExitButton
@@ -36,7 +38,15 @@ func _ready() -> void:
 		player.move_finished.connect(_on_player_move_finished)
 
 	_collect_stage_entry_cells()
-	_set_reveal_state(0.0)
+	if _should_start_in_active_state():
+		_lock_title_overlay_hidden()
+		_set_reveal_state(1.0)
+		if player != null:
+			player.controllable = true
+	else:
+		_set_reveal_state(0.0)
+		if player != null:
+			player.controllable = false
 
 
 func _on_start_button_pressed() -> void:
@@ -47,6 +57,7 @@ func _on_start_button_pressed() -> void:
 	start_button.disabled = true
 	exit_button.disabled = true
 	_play_button_press_sfx()
+	_lock_title_overlay_hidden()
 	await _reveal_title_world()
 	if player != null:
 		player.controllable = true
@@ -106,9 +117,17 @@ func _set_reveal_state(alpha: float) -> void:
 		player.visible = clamped_alpha > 0.0
 		player.modulate.a = clamped_alpha
 
+	if stage_number != null:
+		stage_number.visible = clamped_alpha > 0.0
+		stage_number.modulate.a = clamped_alpha
+
 	if title_overlay != null:
-		title_overlay.visible = clamped_alpha > 0.0 and not _title_overlay_locked_hidden
-		title_overlay.modulate.a = 1.0 - clamped_alpha
+		if _title_overlay_locked_hidden:
+			title_overlay.hide()
+			title_overlay.modulate.a = 0.0
+		else:
+			title_overlay.show()
+			title_overlay.modulate.a = 1.0 - clamped_alpha
 
 
 func _reveal_title_world() -> void:
@@ -168,3 +187,15 @@ func _lock_title_overlay_hidden() -> void:
 	if title_overlay != null:
 		title_overlay.hide()
 		title_overlay.modulate.a = 0.0
+
+
+func _should_start_in_active_state() -> bool:
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return false
+
+	if not tree.has_meta(START_IN_ACTIVE_STATE_META_KEY):
+		return false
+
+	tree.remove_meta(START_IN_ACTIVE_STATE_META_KEY)
+	return true

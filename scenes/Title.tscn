@@ -17,12 +17,81 @@ position = Vector2(170, 60)
 tile_map_data = PackedByteArray("AAABAAEAAAAAAAAAAAACAAEAAAAAAAAAAAADAAEAAAAAAAAAAAAEAAEAAAAAAAAAAAAFAAEAAAAAAAAAAAAGAAEAAAAAAAAAAAAHAAEAAAAAAAAAAAAIAAEAAAAAAAAAAAAJAAEAAAAAAAAAAAAKAAEAAAAAAAAAAAALAAEAAAAAAAAAAAAMAAEAAAAAAAAAAAANAAEAAAAAAAAAAAAOAAEAAAAAAAAAAAAPAAEAAAAAAAAAAAABAAIAAAAAAAAAAAACAAIAAAAAAAAAAAADAAIAAAACAAAAAAAEAAIAAAAAAAAAAAAFAAIAAAAAAAAAAAAGAAIAAAAAAAAAAAAHAAIAAAAAAAAAAAAIAAIAAAACAAAAAAAJAAIAAAAAAAAAAAAKAAIAAAAAAAAAAAALAAIAAAAAAAAAAAAMAAIAAAAAAAAAAAANAAIAAAACAAAAAAAOAAIAAAAAAAAAAAAPAAIAAAAAAAAAAAABAAMAAAAAAAAAAAACAAMAAAAAAAAAAAADAAMAAAAAAAAAAAAEAAMAAAAAAAAAAAAFAAMAAAAAAAAAAAAGAAMAAAAAAAAAAAAHAAMAAAAAAAAAAAAIAAMAAAAAAAAAAAAJAAMAAAAAAAAAAAAKAAMAAAAAAAAAAAALAAMAAAAAAAAAAAAMAAMAAAAAAAAAAAAOAAMAAAAAAAAAAAAPAAMAAAAAAAAAAAABAAQAAAAAAAAAAAACAAQAAAAAAAAAAAADAAQAAAAAAAAAAAAEAAQAAAAAAAAAAAAFAAQAAAAAAAAAAAAGAAQAAAAAAAAAAAAHAAQAAAAAAAAAAAAIAAQAAAAAAAAAAAAJAAQAAAAAAAAAAAAKAAQAAAAAAAAAAAALAAQAAAAAAAAAAAAMAAQAAAAAAAAAAAANAAQAAAAAAAAAAAAOAAQAAAAAAAAAAAAPAAQAAAAAAAAAAAABAAUAAAAAAAAAAAACAAUAAAAAAAAAAAADAAUAAAACAAAAAAAEAAUAAAAAAAAAAAAFAAUAAAAAAAAAAAAGAAUAAAAAAAAAAAAHAAUAAAAAAAAAAAAIAAUAAAACAAAAAAAJAAUAAAAAAAAAAAAKAAUAAAAAAAAAAAALAAUAAAAAAAAAAAAMAAUAAAAAAAAAAAANAAUAAAACAAAAAAAOAAUAAAAAAAAAAAAPAAUAAAAAAAAAAAABAAYAAAAAAAAAAAACAAYAAAAAAAAAAAADAAYAAAAAAAAAAAAEAAYAAAAAAAAAAAAFAAYAAAAAAAAAAAAGAAYAAAAAAAAAAAAHAAYAAAAAAAAAAAAIAAYAAAAAAAAAAAAJAAYAAAAAAAAAAAAKAAYAAAAAAAAAAAALAAYAAAAAAAAAAAAMAAYAAAAAAAAAAAANAAYAAAAAAAAAAAAOAAYAAAAAAAAAAAAPAAYAAAAAAAAAAAABAAcAAAAAAAAAAAACAAcAAAAAAAAAAAADAAcAAAAAAAAAAAAEAAcAAAAAAAAAAAAFAAcAAAAAAAAAAAAGAAcAAAAAAAAAAAAHAAcAAAAAAAAAAAAIAAcAAAAAAAAAAAAJAAcAAAAAAAAAAAAKAAcAAAAAAAAAAAALAAcAAAAAAAAAAAAMAAcAAAAAAAAAAAANAAcAAAAAAAAAAAAOAAcAAAAAAAAAAAAPAAcAAAAAAAAAAAABAAgAAAAAAAAAAAACAAgAAAAAAAAAAAADAAgAAAACAAAAAAAEAAgAAAAAAAAAAAAFAAgAAAAAAAAAAAAGAAgAAAAAAAAAAAAHAAgAAAAAAAAAAAAIAAgAAAACAAAAAAAJAAgAAAAAAAAAAAAKAAgAAAAAAAAAAAALAAgAAAAAAAAAAAAMAAgAAAAAAAAAAAANAAgAAAACAAAAAAAOAAgAAAAAAAAAAAAPAAgAAAAAAAAAAAABAAkAAAAAAAAAAAACAAkAAAAAAAAAAAADAAkAAAAAAAAAAAAEAAkAAAAAAAAAAAAFAAkAAAAAAAAAAAAGAAkAAAAAAAAAAAAHAAkAAAAAAAAAAAAIAAkAAAAAAAAAAAAJAAkAAAAAAAAAAAAKAAkAAAAAAAAAAAALAAkAAAAAAAAAAAAMAAkAAAAAAAAAAAANAAkAAAAAAAAAAAAOAAkAAAAAAAAAAAAPAAkAAAAAAAAAAAANAAMAAAAAAAAAAAA=")
 tile_set = ExtResource("2_mh4yb")
 
-[node name="Player" parent="." unique_id=1088558520 instance=ExtResource("3_wq2ky")]
-visible = false
-position = Vector2(240, 211)
-
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1468176642]
 layer = 10
+
+[node name="StageNumber" type="Control" parent="CanvasLayer" unique_id=1764684293]
+layout_mode = 3
+anchors_preset = 0
+offset_top = -2.0
+offset_right = 40.0
+offset_bottom = 38.0
+
+[node name="Label1" type="Label" parent="CanvasLayer/StageNumber" unique_id=789806651]
+layout_mode = 0
+offset_left = 315.0
+offset_top = 157.0
+offset_right = 361.0
+offset_bottom = 203.0
+theme_override_font_sizes/font_size = 25
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="CanvasLayer/StageNumber" unique_id=1010624107]
+layout_mode = 0
+offset_left = 555.0
+offset_top = 157.0
+offset_right = 601.0
+offset_bottom = 203.0
+theme_override_font_sizes/font_size = 25
+text = "2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label3" type="Label" parent="CanvasLayer/StageNumber" unique_id=1320877123]
+layout_mode = 0
+offset_left = 795.0
+offset_top = 157.0
+offset_right = 841.0
+offset_bottom = 203.0
+theme_override_font_sizes/font_size = 25
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label4" type="Label" parent="CanvasLayer/StageNumber" unique_id=223643845]
+layout_mode = 0
+offset_left = 315.0
+offset_top = 301.0
+offset_right = 361.0
+offset_bottom = 347.0
+theme_override_font_sizes/font_size = 25
+text = "4"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label5" type="Label" parent="CanvasLayer/StageNumber" unique_id=3265720]
+layout_mode = 0
+offset_left = 555.0
+offset_top = 301.0
+offset_right = 601.0
+offset_bottom = 347.0
+theme_override_font_sizes/font_size = 25
+text = "5"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label6" type="Label" parent="CanvasLayer/StageNumber" unique_id=1224435918]
+layout_mode = 0
+offset_left = 795.0
+offset_top = 301.0
+offset_right = 841.0
+offset_bottom = 347.0
+theme_override_font_sizes/font_size = 25
+text = "6"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ClearOverlay" type="Control" parent="CanvasLayer" unique_id=1251669901]
 layout_mode = 3
@@ -40,9 +109,12 @@ mouse_filter = 2
 color = Color(0, 0, 0, 0.59607846)
 
 [node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/ClearOverlay" unique_id=1158290546]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/ClearOverlay/CenterContainer" unique_id=536382159]
@@ -61,5 +133,9 @@ text = "시작"
 [node name="ExitButton" type="Button" parent="CanvasLayer/ClearOverlay/CenterContainer/VBoxContainer" unique_id=79247946]
 layout_mode = 2
 text = "종료"
+
+[node name="Player" parent="." unique_id=1088558520 instance=ExtResource("3_wq2ky")]
+visible = false
+position = Vector2(240, 211)
 
 [node name="AudioStreamPlayer" parent="." unique_id=1584869751 instance=ExtResource("4_iyajp")]

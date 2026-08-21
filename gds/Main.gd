@@ -22,8 +22,10 @@ const MOVE_COUNT_TEXT: String = "이동 횟수: %d"
 @onready var result_overlay: Control = $CanvasLayer/ClearOverlay
 @onready var result_title_label: Label = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/TitleLabel
 @onready var result_message_label: Label = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/MessageLabel
+@onready var result_buttons_container: VBoxContainer = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer
 @onready var next_button: Button = get_node_or_null("CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/NextButton") as Button
 @onready var restart_button: Button = $CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/RetryButton
+@onready var title_button: Button = get_node_or_null("CanvasLayer/ClearOverlay/CenterContainer/ClearPanel/VBoxContainer/TitleButton") as Button
 @onready var tutorial_overlay: Node = get_node_or_null("CanvasLayer/TutorialOverlay")
 
 var _goal_cells: Dictionary = {}
@@ -91,12 +93,17 @@ func _setup_clear_ui() -> void:
 		next_button.visible = false
 	result_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_configure_next_button()
+	_ensure_title_button()
+	if title_button != null:
+		title_button.visible = false
 	if hud_restart_button != null and not hud_restart_button.pressed.is_connected(_on_restart_button_pressed):
 		hud_restart_button.pressed.connect(_on_restart_button_pressed)
 	if not restart_button.pressed.is_connected(_on_restart_button_pressed):
 		restart_button.pressed.connect(_on_restart_button_pressed)
 	if next_button != null and not next_button.pressed.is_connected(_on_next_button_pressed):
 		next_button.pressed.connect(_on_next_button_pressed)
+	if title_button != null and not title_button.pressed.is_connected(_on_title_button_pressed):
+		title_button.pressed.connect(_on_title_button_pressed)
 
 	if undo_button != null:
 		undo_button.action_mode = BaseButton.ACTION_MODE_BUTTON_PRESS
@@ -108,6 +115,8 @@ func _setup_clear_ui() -> void:
 		hud_restart_button.focus_mode = Control.FOCUS_NONE
 	if restart_button != null:
 		restart_button.focus_mode = Control.FOCUS_NONE
+	if title_button != null:
+		title_button.focus_mode = Control.FOCUS_NONE
 
 	_update_undo_button_ui()
 
@@ -231,6 +240,8 @@ func _show_clear_ui() -> void:
 	result_overlay.visible = true
 	if next_button != null:
 		next_button.visible = true
+	if title_button != null:
+		title_button.visible = false
 	_update_undo_button_ui()
 
 
@@ -249,6 +260,8 @@ func _show_game_over_ui() -> void:
 	result_overlay.visible = true
 	if next_button != null:
 		next_button.visible = false
+	if title_button != null:
+		title_button.visible = true
 	_update_undo_button_ui()
 
 
@@ -345,7 +358,16 @@ func _on_next_button_pressed() -> void:
 		return
 
 	_play_button_press_sfx()
+	if _next_stage_path.ends_with("Title.tscn"):
+		_go_to_title_scene(true)
+		return
+
 	get_tree().change_scene_to_file(_next_stage_path)
+
+
+func _on_title_button_pressed() -> void:
+	_play_button_press_sfx()
+	_go_to_title_scene(true)
 
 
 func _on_undo_button_pressed() -> void:
@@ -508,3 +530,34 @@ func _play_sheep_alert_sound() -> void:
 
 	sheep_alert_sfx.stop()
 	sheep_alert_sfx.play()
+
+
+func _ensure_title_button() -> void:
+	if title_button != null:
+		return
+	if result_buttons_container == null:
+		return
+
+	title_button = Button.new()
+	title_button.name = "TitleButton"
+	title_button.custom_minimum_size = Vector2(120, 32)
+	title_button.layout_mode = 2
+	title_button.add_theme_font_size_override("font_size", 20)
+	title_button.text = "타이틀로"
+	title_button.visible = false
+	result_buttons_container.add_child(title_button)
+	if restart_button != null:
+		result_buttons_container.move_child(title_button, restart_button.get_index() + 1)
+	if not title_button.pressed.is_connected(_on_title_button_pressed):
+		title_button.pressed.connect(_on_title_button_pressed)
+
+
+func _go_to_title_scene(start_in_active_state: bool) -> void:
+	var tree: SceneTree = get_tree()
+	if tree == null:
+		return
+
+	if start_in_active_state:
+		tree.set_meta("title_start_in_active_state", true)
+
+	tree.change_scene_to_file("res://scenes/Title.tscn")
