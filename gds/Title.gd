@@ -26,7 +26,6 @@ const STAGE_SCENE_PATHS: Array[String] = [
 
 var _is_starting: bool = false
 var _is_entering_stage: bool = false
-var _is_exit_shortcut_enabled: bool = false
 var _entry_cell_to_scene_path: Dictionary = {}
 var _title_overlay_locked_hidden: bool = false
 
@@ -48,7 +47,6 @@ func _ready() -> void:
 	_collect_stage_entry_cells()
 	_hide_exit_confirm_overlay()
 	if _should_start_in_active_state():
-		_is_exit_shortcut_enabled = true
 		_lock_title_overlay_hidden()
 		_set_reveal_state(1.0)
 		if player != null:
@@ -69,7 +67,6 @@ func _on_start_button_pressed() -> void:
 	_play_button_press_sfx()
 	_lock_title_overlay_hidden()
 	await _reveal_title_world()
-	_is_exit_shortcut_enabled = true
 	if player != null:
 		player.controllable = true
 
@@ -101,14 +98,16 @@ func _unhandled_input(event: InputEvent) -> void:
 	if key_event.keycode != KEY_ESCAPE and key_event.physical_keycode != KEY_ESCAPE:
 		return
 
-	if not _is_exit_shortcut_enabled:
-		return
+	_handle_exit_shortcut()
 
+
+func _handle_exit_shortcut() -> void:
 	get_viewport().set_input_as_handled()
 	if exit_confirm_overlay != null and exit_confirm_overlay.visible:
 		_on_cancel_exit_button_pressed()
-	else:
-		_show_exit_confirm_overlay()
+		return
+
+	_show_exit_confirm_overlay()
 
 
 func _on_player_move_started(actor: Node, _from_cell: Vector2i, _to_cell: Vector2i, _direction: Vector2i) -> void:

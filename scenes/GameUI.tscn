@@ -79,7 +79,7 @@ anchor_bottom = 1.0
 mouse_filter = 2
 
 [node name="ClearPanel" type="PanelContainer" parent="ClearOverlay/CenterContainer" unique_id=2144728491]
-custom_minimum_size = Vector2(280, 160)
+custom_minimum_size = Vector2(350, 200)
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ClearOverlay/CenterContainer/ClearPanel" unique_id=465874850]

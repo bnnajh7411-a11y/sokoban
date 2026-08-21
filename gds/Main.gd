@@ -15,6 +15,7 @@ const MOVE_COUNT_TEXT: String = "이동 횟수: %d"
 
 @onready var tile_map_layer: TileMapLayer = $TileMapLayer
 @onready var player: GridActor = $Player
+@onready var canvas_layer: CanvasLayer = $CanvasLayer
 @onready var undo_button: Button = get_node_or_null("CanvasLayer/Hud/UndoButton") as Button
 @onready var hud_restart_button: Button = get_node_or_null("CanvasLayer/Hud/RetryButton") as Button
 @onready var move_count_label: Label = $CanvasLayer/Hud/MoveCountLabel
@@ -39,11 +40,15 @@ var _is_turn_active: bool = false
 var _is_cleared: bool = false
 var _is_game_over: bool = false
 var _next_stage_path: String = ""
+var _exit_confirm_overlay: Control
+var _confirm_exit_button: Button
+var _cancel_exit_button: Button
 
 
 func _ready() -> void:
 	_collect_goal_cells()
 	_setup_clear_ui()
+	_setup_exit_confirm_ui()
 	_update_move_count_ui()
 	call_deferred("_bind_turn_flow")
 	_update_undo_button_ui()
@@ -57,10 +62,27 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not key_event.pressed or key_event.echo:
 		return
 
+	if key_event.keycode == KEY_ESCAPE or key_event.physical_keycode == KEY_ESCAPE:
+		_handle_exit_shortcut()
+		return
+
+	if _is_exit_confirm_visible():
+		get_viewport().set_input_as_handled()
+		return
+
 	if key_event.keycode == KEY_Z or key_event.physical_keycode == KEY_Z:
 		_handle_undo_shortcut()
 	elif key_event.keycode == KEY_X or key_event.physical_keycode == KEY_X:
 		_handle_retry_shortcut()
+
+
+func _handle_exit_shortcut() -> void:
+	get_viewport().set_input_as_handled()
+	if _is_exit_confirm_visible():
+		_on_cancel_exit_button_pressed()
+		return
+
+	_show_exit_confirm_overlay()
 
 
 func _bind_turn_flow() -> void:
@@ -119,6 +141,123 @@ func _setup_clear_ui() -> void:
 		title_button.focus_mode = Control.FOCUS_NONE
 
 	_update_undo_button_ui()
+
+
+func _setup_exit_confirm_ui() -> void:
+	if canvas_layer == null:
+		return
+
+	_exit_confirm_overlay = canvas_layer.get_node_or_null("ExitConfirmOverlay") as Control
+	if _exit_confirm_overlay == null:
+		_exit_confirm_overlay = Control.new()
+		_exit_confirm_overlay.name = "ExitConfirmOverlay"
+		_exit_confirm_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+		_exit_confirm_overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+		_exit_confirm_overlay.z_index = 1000
+		canvas_layer.add_child(_exit_confirm_overlay)
+
+	if _exit_confirm_overlay.get_node_or_null("Dimmer") == null:
+		var dimmer: ColorRect = ColorRect.new()
+		dimmer.name = "Dimmer"
+		dimmer.set_anchors_preset(Control.PRESET_FULL_RECT)
+		dimmer.mouse_filter = Control.MOUSE_FILTER_STOP
+		dimmer.color = Color(0, 0, 0, 0.7254902)
+		_exit_confirm_overlay.add_child(dimmer)
+
+	var center_container: CenterContainer = _exit_confirm_overlay.get_node_or_null("CenterContainer") as CenterContainer
+	if center_container == null:
+		center_container = CenterContainer.new()
+		center_container.name = "CenterContainer"
+		center_container.set_anchors_preset(Control.PRESET_FULL_RECT)
+		center_container.mouse_filter = Control.MOUSE_FILTER_STOP
+		_exit_confirm_overlay.add_child(center_container)
+
+	var panel_container: PanelContainer = center_container.get_node_or_null("PanelContainer") as PanelContainer
+	if panel_container == null:
+		panel_container = PanelContainer.new()
+		panel_container.name = "PanelContainer"
+		panel_container.custom_minimum_size = Vector2(320, 160)
+		center_container.add_child(panel_container)
+
+	var vbox: VBoxContainer = panel_container.get_node_or_null("VBoxContainer") as VBoxContainer
+	if vbox == null:
+		vbox = VBoxContainer.new()
+		vbox.name = "VBoxContainer"
+		vbox.add_theme_constant_override("separation", 16)
+		panel_container.add_child(vbox)
+
+	var message_label: Label = vbox.get_node_or_null("MessageLabel") as Label
+	if message_label == null:
+		message_label = Label.new()
+		message_label.name = "MessageLabel"
+		message_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		message_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		message_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		message_label.add_theme_font_size_override("font_size", 24)
+		message_label.text = "종료하시겠습니까?"
+		vbox.add_child(message_label)
+
+	var button_container: HBoxContainer = vbox.get_node_or_null("ButtonContainer") as HBoxContainer
+	if button_container == null:
+		button_container = HBoxContainer.new()
+		button_container.name = "ButtonContainer"
+		button_container.alignment = BoxContainer.ALIGNMENT_CENTER
+		button_container.add_theme_constant_override("separation", 12)
+		vbox.add_child(button_container)
+
+	_confirm_exit_button = button_container.get_node_or_null("ConfirmButton") as Button
+	if _confirm_exit_button == null:
+		_confirm_exit_button = Button.new()
+		_confirm_exit_button.name = "ConfirmButton"
+		_confirm_exit_button.custom_minimum_size = Vector2(120, 36)
+		_confirm_exit_button.text = "종료"
+		button_container.add_child(_confirm_exit_button)
+	if not _confirm_exit_button.pressed.is_connected(_on_confirm_exit_button_pressed):
+		_confirm_exit_button.pressed.connect(_on_confirm_exit_button_pressed)
+
+	_cancel_exit_button = button_container.get_node_or_null("CancelButton") as Button
+	if _cancel_exit_button == null:
+		_cancel_exit_button = Button.new()
+		_cancel_exit_button.name = "CancelButton"
+		_cancel_exit_button.custom_minimum_size = Vector2(120, 36)
+		_cancel_exit_button.text = "취소"
+		button_container.add_child(_cancel_exit_button)
+	if not _cancel_exit_button.pressed.is_connected(_on_cancel_exit_button_pressed):
+		_cancel_exit_button.pressed.connect(_on_cancel_exit_button_pressed)
+
+	_exit_confirm_overlay.hide()
+
+
+func _show_exit_confirm_overlay() -> void:
+	if _exit_confirm_overlay == null:
+		_setup_exit_confirm_ui()
+	if _exit_confirm_overlay == null:
+		_on_confirm_exit_button_pressed()
+		return
+
+	_exit_confirm_overlay.show()
+	if _confirm_exit_button != null:
+		_confirm_exit_button.grab_focus()
+
+
+func _hide_exit_confirm_overlay() -> void:
+	if _exit_confirm_overlay != null:
+		_exit_confirm_overlay.hide()
+
+
+func _is_exit_confirm_visible() -> bool:
+	return _exit_confirm_overlay != null and _exit_confirm_overlay.visible
+
+
+func _on_confirm_exit_button_pressed() -> void:
+	_play_button_press_sfx()
+	await get_tree().create_timer(0.12).timeout
+	get_tree().quit()
+
+
+func _on_cancel_exit_button_pressed() -> void:
+	_play_button_press_sfx()
+	_hide_exit_confirm_overlay()
 
 
 func _update_move_count_ui() -> void:
@@ -384,7 +523,7 @@ func _handle_undo_shortcut() -> void:
 	if undo_button == null or undo_button.disabled:
 		return
 
-	_on_undo_button_pressed()
+	undo_button.emit_signal("pressed")
 	get_viewport().set_input_as_handled()
 
 
