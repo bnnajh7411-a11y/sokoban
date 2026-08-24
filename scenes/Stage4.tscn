@@ -11,6 +11,7 @@
 script = ExtResource("1_k48tw")
 
 [node name="Polygon2D" type="Polygon2D" parent="." unique_id=1738251972]
+scale = Vector2(5, 5)
 color = Color(0.4253108, 0.67530113, 0.7696371, 1)
 polygon = PackedVector2Array(-100, -100, -100, 700, 1200, 700, 1200, -100)
 
