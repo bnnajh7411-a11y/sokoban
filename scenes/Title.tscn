@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://mvxbpemqhddq" path="res://image/Cloud.png" id="2_aa56r"]
 [ext_resource type="TileSet" uid="uid://vpv4llnwj4qi" path="res://generated/level_tileset.tres" id="2_mh4yb"]
 [ext_resource type="PackedScene" uid="uid://boiwx3wbv6oq8" path="res://actors/Player.tscn" id="3_wq2ky"]
+[ext_resource type="FontFile" uid="uid://b5j8y0qkrhrcu" path="res://fonts/NotoSansKR-VariableFont_wght.ttf" id="4_agd63"]
 [ext_resource type="PackedScene" uid="uid://c7uk1vxpnt40y" path="res://scenes/BGM.tscn" id="4_iyajp"]
 
 [node name="Title" type="Node2D" unique_id=598128310]
@@ -62,15 +63,18 @@ theme_override_constants/separation = 8
 
 [node name="TitleLabel" type="Label" parent="CanvasLayer/ClearOverlay/CenterContainer/VBoxContainer" unique_id=1039674286]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_agd63")
 text = "The Lamb of the Wolf"
 horizontal_alignment = 1
 
 [node name="StartButton" type="Button" parent="CanvasLayer/ClearOverlay/CenterContainer/VBoxContainer" unique_id=53477291]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_agd63")
 text = "시작"
 
 [node name="ExitButton" type="Button" parent="CanvasLayer/ClearOverlay/CenterContainer/VBoxContainer" unique_id=79247946]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_agd63")
 text = "종료"
 
 [node name="ExitConfirmOverlay" type="Control" parent="CanvasLayer" unique_id=1842217337]
@@ -108,6 +112,7 @@ theme_override_constants/separation = 16
 [node name="MessageLabel" type="Label" parent="CanvasLayer/ExitConfirmOverlay/CenterContainer/PanelContainer/VBoxContainer" unique_id=2094430198]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_fonts/font = ExtResource("4_agd63")
 theme_override_font_sizes/font_size = 24
 text = "종료하시겠습니까?"
 horizontal_alignment = 1
@@ -121,11 +126,13 @@ alignment = 1
 [node name="ConfirmButton" type="Button" parent="CanvasLayer/ExitConfirmOverlay/CenterContainer/PanelContainer/VBoxContainer/ButtonContainer" unique_id=621935248]
 custom_minimum_size = Vector2(120, 36)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_agd63")
 text = "종료"
 
 [node name="CancelButton" type="Button" parent="CanvasLayer/ExitConfirmOverlay/CenterContainer/PanelContainer/VBoxContainer/ButtonContainer" unique_id=1969221978]
 custom_minimum_size = Vector2(120, 36)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("4_agd63")
 text = "취소"
 
 [node name="StageNumber" type="Node2D" parent="." unique_id=1764684293]
