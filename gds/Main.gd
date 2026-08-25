@@ -673,6 +673,7 @@ func _play_sheep_alert_sound() -> void:
 
 func _ensure_title_button() -> void:
 	if title_button != null:
+		_apply_title_button_style()
 		return
 	if result_buttons_container == null:
 		return
@@ -681,7 +682,7 @@ func _ensure_title_button() -> void:
 	title_button.name = "TitleButton"
 	title_button.custom_minimum_size = Vector2(120, 32)
 	title_button.layout_mode = 2
-	title_button.add_theme_font_size_override("font_size", 20)
+	_apply_title_button_style()
 	title_button.text = "타이틀로"
 	title_button.visible = false
 	result_buttons_container.add_child(title_button)
@@ -689,6 +690,19 @@ func _ensure_title_button() -> void:
 		result_buttons_container.move_child(title_button, restart_button.get_index() + 1)
 	if not title_button.pressed.is_connected(_on_title_button_pressed):
 		title_button.pressed.connect(_on_title_button_pressed)
+
+
+func _apply_title_button_style() -> void:
+	if title_button == null:
+		return
+
+	var style_source_button: Button = next_button if next_button != null else restart_button
+	if style_source_button == null:
+		title_button.add_theme_font_size_override("font_size", 20)
+		return
+
+	title_button.add_theme_font_override("font", style_source_button.get_theme_font("font"))
+	title_button.add_theme_font_size_override("font_size", style_source_button.get_theme_font_size("font_size"))
 
 
 func _go_to_title_scene(start_in_active_state: bool) -> void:

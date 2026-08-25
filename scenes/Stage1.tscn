@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://boiwx3wbv6oq8" path="res://actors/Player.tscn" id="3_qasgr"]
 [ext_resource type="PackedScene" uid="uid://buv7dxqf55wu4" path="res://scenes/GameUI.tscn" id="4_ui"]
 [ext_resource type="Script" uid="uid://cblu8a023gdar" path="res://gds/Stage1Tutorial.gd" id="5_tutorial"]
+[ext_resource type="FontFile" uid="uid://b5j8y0qkrhrcu" path="res://fonts/NotoSansKR-VariableFont_wght.ttf" id="6_gc27x"]
 [ext_resource type="AudioStream" uid="uid://d38mchrsl3i5s" path="res://audios/L01183-002+B+KR_KSL2022_A0031+가축_양_인천 논현고잔동_늘솔길양떼목장에서 나는 아기 양 울음 소리_48khz320kbps_Mono.mp3" id="8_d6jml"]
 
 [node name="Stage2" type="Node2D" unique_id=1683069215]
@@ -81,6 +82,7 @@ theme_override_constants/margin_bottom = 18
 
 [node name="MessageLabel" type="Label" parent="CanvasLayer/TutorialOverlay/MessageOverlay/CenterContainer/TutorialPanel/MarginContainer" unique_id=187131931]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("6_gc27x")
 theme_override_font_sizes/font_size = 22
 text = "방향키로 늑대를 움직여 보세요."
 horizontal_alignment = 1
